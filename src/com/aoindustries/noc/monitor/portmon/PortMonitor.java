@@ -1,161 +1,80 @@
-package com.aoindustries.aoserv.portmon;
+package com.aoindustries.noc.monitor.portmon;
+
 /*
  * Copyright 2001-2009 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
-import com.aoindustries.aoserv.client.*;
-import com.aoindustries.aoserv.daemon.*;
-import com.aoindustries.profiler.*;
-import java.util.*;
+import com.aoindustries.aoserv.client.IPAddress;
+import com.aoindustries.aoserv.client.NetProtocol;
+import com.aoindustries.aoserv.client.Protocol;
+import java.util.Map;
 
 /**
- * The <code>PortMonitor</code> assigns ports to the allocated
- * <code>PortConnector</code>s.  It also starts a <code>Watchdog</code>
- * that notifies when a port has not been distributed in enough time or
- * a <code>PortConnector</code> takes too long to connect.
+ * A <code>PortMonitor</code> connects to a service on a port and verifies it is
+ * working correctly.  The monitor will only be used at most once per instance.
  *
  * @author  AO Industries, Inc.
  */
-public final class PortMonitor implements Runnable {
+public abstract class PortMonitor {
 
     /**
-     * The time between scanning each port.
+     * Factory method to get the best port monitor for the provided port
+     * details.  If can't find any monitor, will through IllegalArgumentException.
      */
-    private static final int SCAN_DELAY=500;
-    
+    public static PortMonitor getPortMonitor(String ipAddress, int port, String netProtocol, String appProtocol, Map<String,String> monitoringParameters) throws IllegalArgumentException {
+        if(NetProtocol.UDP.equals(netProtocol)) {
+            // UDP
+            return new DefaultUdpPortMonitor(ipAddress, port);
+        } else if(NetProtocol.TCP.equals(netProtocol)) {
+            // TCP
+            if(Protocol.FTP.equals(appProtocol)) return new FtpPortMonitor(ipAddress, port, monitoringParameters);
+            if(Protocol.IMAP2.equals(appProtocol)) return new ImapPortMonitor(ipAddress, port, monitoringParameters);
+            if(Protocol.MYSQL.equals(appProtocol)) return new MySQLPortMonitor(ipAddress, port, monitoringParameters);
+            if(Protocol.POP3.equals(appProtocol)) return new Pop3PortMonitor(ipAddress, port, monitoringParameters);
+            if(Protocol.POSTGRESQL.equals(appProtocol) && !IPAddress.LOOPBACK_IP.equals(ipAddress)) return new PostgresSQLPortMonitor(ipAddress, port, monitoringParameters);
+            if(Protocol.SMTP.equals(appProtocol)) return new SmtpPortMonitor(ipAddress, port, monitoringParameters);
+            if(Protocol.SSH.equals(appProtocol)) return new SshPortMonitor(ipAddress, port);
+            return new DefaultTcpPortMonitor(ipAddress, port);
+        } else {
+            throw new IllegalArgumentException("Unable to find port monitor: ipAddress=\""+ipAddress+"\", port="+port+", netProtocol=\""+netProtocol+"\", appProtocol=\""+appProtocol+"\"");
+        }
+    }
+
+    protected final String ipAddress;
+    protected final int port;
+    protected volatile boolean canceled;
+
+    protected PortMonitor(String ipAddress, int port) {
+        this.ipAddress = ipAddress;
+        this.port = port;
+    }
+
     /**
-     * The time between each scan pass.
+     * <p>
+     * Cancels this port method on a best effort basis.  This will not necessarily cause the checkPort
+     * method to return immediately.  This should only be used once the result
+     * of checkPort is no longer relevant, such as after a timeout.  Some monitors
+     * may still perform their task arbitrarily long after cancel has been called.
+     * </p>
+     * <p>
+     * It is critical that subclass implementations of this method not block in any way.
+     * </p>
+     *
+     * @see  #checkPort()
      */
-    private static final int SCAN_INTERVAL=5*60*1000;
-    
-    private static Thread thread=null;
-    static Watchdog watchdog=null;
-    static BatchEmailer batchEmailer=null;
-
-    public static void main(String[] args) {
-        Profiler.startProfile(Profiler.INSTANTANEOUS, PortMonitor.class, "main(String[])", null);
-        try {
-            start();
-        } finally {
-            Profiler.endProfile(Profiler.INSTANTANEOUS);
-        }
+    public void cancel() {
+        canceled = true;
     }
 
-    public static void start() {
-        Profiler.startProfile(Profiler.UNKNOWN, PortMonitor.class, "start()", null);
-        try {
-            if(thread==null) {
-                synchronized(System.out) {
-                    if(thread==null) {
-                        System.out.print("Starting PortMonitor: ");
-                        (thread=new Thread(new PortMonitor(), "PortMonitor")).start();
-                        (watchdog=new Watchdog()).start();
-                        (batchEmailer=new BatchEmailer()).start();
-                        System.out.println("Done");
-                    }
-                }
-            }
-        } finally {
-            Profiler.endProfile(Profiler.UNKNOWN);
-        }
-    }
-
-    public void run() {
-        Profiler.startProfile(Profiler.UNKNOWN, PortMonitor.class, "run()", null);
-        try {
-            while (true) {
-                try {
-                    // Values used inside the loop
-                    Random random=AOServDaemon.getRandom();
-                    List<IPAddress> pubs=new ArrayList<IPAddress>();
-                    AOServConnector conn=AOServDaemon.getConnector();
-
-                    while (true) {
-                        long startTime=System.currentTimeMillis();
-                        List<NetBind> binds = new ArrayList<NetBind>();
-                        binds.addAll(conn.netBinds.values());
-                        Collections.shuffle(binds);
-                        for (int i=0; i<binds.size(); i++) {
-                            NetBind bind = binds.get(i);
-                            if (bind.isFirewallOpen() && bind.isMonitoringEnabled()) {
-                                AOServer aoServer=bind.getAOServer();
-                                if(aoServer.isMonitoringEnabled()) {
-                                    IPAddress bindAddress = bind.getIPAddress();
-                                    String ipString=bindAddress.getIPAddress();
-                                    if (!ipString.equals(IPAddress.LOOPBACK_IP)) {
-                                        if (ipString.equals(IPAddress.WILDCARD_IP)) {
-                                            // Only check the main IP addresses for wildcard
-                                            List<IPAddress> ipAddresses = aoServer.getIPAddresses();
-
-                                            // Find a random, non-primary IP Address
-                                            pubs.clear();
-                                            for(int c=0;c<ipAddresses.size();c++) {
-                                                IPAddress ia=ipAddresses.get(c);
-                                                if(
-                                                    ia.getNetDevice()!=null
-                                                    && !ia.isPrivate()
-                                                ) pubs.add(ia);
-                                            }
-                                            IPAddress randomAddress=pubs.get(random.nextInt(pubs.size()));
-
-                                            // Connect to the random IP
-                                            PortConnector.checkPort(
-                                                aoServer,
-                                                randomAddress.getIPAddress(),
-                                                bind.getPort().getPort(),
-                                                bind.getNetProtocol().getProtocol(),
-                                                bind.getAppProtocol().getProtocol()
-                                            );
-                                        } else {
-                                            if (
-                                                !bindAddress.isPrivate()
-                                            ) {
-                                                PortConnector.checkPort(
-                                                    bind.getAOServer(),
-                                                    ipString,
-                                                    bind.getPort().getPort(),
-                                                    bind.getNetProtocol().getProtocol(),
-                                                    bind.getAppProtocol().getProtocol()
-                                                );
-                                            }
-                                        }
-                                    }
-
-                                    // Let the watchdog know we are OK
-                                    watchdog.portDistributed();
-
-                                    // Wait for the next run
-                                    try {
-                                        Thread.sleep(SCAN_DELAY);
-                                    } catch(InterruptedException err) {
-                                        AOServDaemon.reportWarning(err, null);
-                                    }
-                                }
-                            }
-                        }
-                        long scanTime=System.currentTimeMillis()-startTime;
-                        if(scanTime>=0 && scanTime<SCAN_INTERVAL) {
-                            try {
-                                Thread.sleep(SCAN_INTERVAL-scanTime);
-                            } catch(InterruptedException err) {
-                                AOServDaemon.reportWarning(err, null);
-                            }
-                        }
-                    }
-                } catch (ThreadDeath err) {
-                    throw err;
-                } catch (Throwable err) {
-                    AOServDaemon.reportError(err, null);
-                    try {
-                        Thread.currentThread().sleep(60000);
-                    } catch (InterruptedException errIE) {
-                        AOServDaemon.reportWarning(errIE, null);
-                    }
-                }
-            }
-        } finally {
-            Profiler.endProfile(Profiler.UNKNOWN);
-        }
-    }
+    /**
+     * Checks the port.  This may take arbitrarily long to complete, and any timeout
+     * should be provided externally and call the <code>cancel</code> method.
+     * If any error occurs, must throw an exception.
+     *
+     * @see  #cancel()
+     *
+     * @return  the message indicating success
+     */
+    public abstract String checkPort() throws Exception;
 }
