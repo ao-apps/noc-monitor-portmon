@@ -14,6 +14,8 @@ import java.sql.Statement;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Monitors a database over JDBC.
@@ -21,6 +23,8 @@ import java.util.concurrent.ConcurrentMap;
  * @author  AO Industries, Inc.
  */
 abstract public class JdbcPortMonitor extends PortMonitor {
+
+    private static final Logger logger = Logger.getLogger(JdbcPortMonitor.class.getName());
 
     private static final ConcurrentMap<String,Object> driversLoaded = new ConcurrentHashMap<String,Object>();
 
@@ -41,6 +45,8 @@ abstract public class JdbcPortMonitor extends PortMonitor {
         this.monitoringParameters = monitoringParameters;
     }
 
+    private volatile Connection conn;
+
     @Override
     final public String checkPort() throws Exception {
         // Get the configuration
@@ -54,7 +60,7 @@ abstract public class JdbcPortMonitor extends PortMonitor {
         if(query==null || query.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the query parameter");
 
         loadDriver(getDriver());
-        Connection conn = DriverManager.getConnection(
+        conn = DriverManager.getConnection(
             getJdbcUrl(ipAddress, port, database),
             username,
             password
@@ -80,6 +86,19 @@ abstract public class JdbcPortMonitor extends PortMonitor {
             }
         } finally {
             conn.close();
+        }
+    }
+
+    @Override
+    public void cancel() {
+        super.cancel();
+        Connection myConn = conn;
+        if(myConn!=null) {
+            try {
+                myConn.close();
+            } catch(SQLException err) {
+                logger.log(Level.WARNING, null, err);
+            }
         }
     }
 
