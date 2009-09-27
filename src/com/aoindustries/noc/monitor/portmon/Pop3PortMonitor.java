@@ -58,7 +58,10 @@ public class Pop3PortMonitor extends DefaultTcpPortMonitor {
                 out.flush();
                 line = in.readLine();
                 if(line==null) throw new EOFException("End of file reading pass response");
-                if(!line.startsWith("+OK ")) throw new IOException("Unexpected line reading pass response: "+line);
+                if(
+                    !line.startsWith("+OK ") // Not locked
+                    && !line.equals("-ERR [IN-USE] Unable to lock maildrop: Mailbox is locked by POP server")
+                ) throw new IOException("Unexpected line reading pass response: "+line);
                 String result = line.substring(4);
                 // Quit
                 out.println("quit");

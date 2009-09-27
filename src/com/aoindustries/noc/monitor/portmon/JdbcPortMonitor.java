@@ -12,6 +12,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Monitors a database over JDBC.
@@ -19,6 +21,18 @@ import java.util.Map;
  * @author  AO Industries, Inc.
  */
 abstract public class JdbcPortMonitor extends PortMonitor {
+
+    private static final ConcurrentMap<String,Object> driversLoaded = new ConcurrentHashMap<String,Object>();
+
+    /**
+     * Loads a driver at most once.
+     */
+    private static void loadDriver(String classname) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+        if(!driversLoaded.containsKey(classname)) {
+            Object O = Class.forName(classname).newInstance();
+            driversLoaded.put(classname, O);
+        }
+    }
 
     private final Map<String,String> monitoringParameters;
 
@@ -39,7 +53,7 @@ abstract public class JdbcPortMonitor extends PortMonitor {
         String query = monitoringParameters.get("query");
         if(query==null || query.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the query parameter");
 
-        Class.forName(getDriver()).newInstance();
+        loadDriver(getDriver());
         Connection conn = DriverManager.getConnection(
             getJdbcUrl(ipAddress, port, database),
             username,

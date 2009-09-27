@@ -33,7 +33,7 @@ public abstract class PortMonitor {
             if(Protocol.MYSQL.equals(appProtocol)) return new MySQLPortMonitor(ipAddress, port, monitoringParameters);
             if(Protocol.POP3.equals(appProtocol)) return new Pop3PortMonitor(ipAddress, port, monitoringParameters);
             if(Protocol.POSTGRESQL.equals(appProtocol) && !IPAddress.LOOPBACK_IP.equals(ipAddress)) return new PostgresSQLPortMonitor(ipAddress, port, monitoringParameters);
-            if(Protocol.SMTP.equals(appProtocol)) return new SmtpPortMonitor(ipAddress, port, monitoringParameters);
+            if(Protocol.SMTP.equals(appProtocol) || Protocol.SUBMISSION.equals(appProtocol)) return new SmtpPortMonitor(ipAddress, port, monitoringParameters);
             if(Protocol.SSH.equals(appProtocol)) return new SshPortMonitor(ipAddress, port);
             return new DefaultTcpPortMonitor(ipAddress, port);
         } else {
