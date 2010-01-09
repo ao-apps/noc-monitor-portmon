@@ -5,6 +5,7 @@ package com.aoindustries.noc.monitor.portmon;
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
+import com.aoindustries.aoserv.client.validator.NetPort;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
@@ -17,7 +18,7 @@ public class DefaultUdpPortMonitor extends PortMonitor {
 
     private volatile DatagramSocket datagramSocket;
 
-    public DefaultUdpPortMonitor(String ipAddress, int port) {
+    public DefaultUdpPortMonitor(com.aoindustries.aoserv.client.validator.InetAddress ipAddress, NetPort port) {
         super(ipAddress, port);
     }
 
@@ -32,7 +33,7 @@ public class DefaultUdpPortMonitor extends PortMonitor {
     public String checkPort() throws Exception {
         datagramSocket=new DatagramSocket();
         try {
-            datagramSocket.connect(InetAddress.getByName(ipAddress), port);
+            datagramSocket.connect(InetAddress.getByName(ipAddress.getAddress()), port.getPort());
         } finally {
             // datagramSocket.disconnect();
             datagramSocket.close();

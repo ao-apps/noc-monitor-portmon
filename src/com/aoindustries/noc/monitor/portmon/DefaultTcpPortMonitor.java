@@ -5,6 +5,8 @@ package com.aoindustries.noc.monitor.portmon;
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
+import com.aoindustries.aoserv.client.validator.InetAddress;
+import com.aoindustries.aoserv.client.validator.NetPort;
 import com.aoindustries.io.AOPool;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +29,7 @@ public class DefaultTcpPortMonitor extends PortMonitor {
 
     private volatile Socket socket;
 
-    public DefaultTcpPortMonitor(String ipAddress, int port) {
+    public DefaultTcpPortMonitor(InetAddress ipAddress, NetPort port) {
         super(ipAddress, port);
     }
 
@@ -52,7 +54,7 @@ public class DefaultTcpPortMonitor extends PortMonitor {
             socket.setSoLinger(true, AOPool.DEFAULT_SOCKET_SO_LINGER);
             //socket.setTcpNoDelay(true);
             socket.setSoTimeout(60000);
-            socket.connect(new InetSocketAddress(ipAddress, port), 60*1000);
+            socket.connect(new InetSocketAddress(ipAddress.getAddress(), port.getPort()), 60*1000);
 
             return checkPort(socket.getInputStream(), socket.getOutputStream());
         } finally {

@@ -6,6 +6,8 @@ package com.aoindustries.noc.monitor.portmon;
  * All rights reserve parameterd.
  */
 import com.aoindustries.aoserv.client.PostgresDatabase;
+import com.aoindustries.aoserv.client.validator.InetAddress;
+import com.aoindustries.aoserv.client.validator.NetPort;
 import java.util.Map;
 
 /**
@@ -15,7 +17,7 @@ import java.util.Map;
  */
 public class PostgresSQLPortMonitor extends JdbcPortMonitor {
 
-    public PostgresSQLPortMonitor(String ipAddress, int port, Map<String,String> monitoringParameters) {
+    public PostgresSQLPortMonitor(InetAddress ipAddress, NetPort port, Map<String,String> monitoringParameters) {
         super(ipAddress, port, monitoringParameters);
     }
 
@@ -25,7 +27,9 @@ public class PostgresSQLPortMonitor extends JdbcPortMonitor {
     }
 
     @Override
-    protected String getJdbcUrl(String ipAddress, int port, String database) {
-        return "jdbc:postgresql://"+ipAddress+":"+port+"/"+database;
+    protected String getJdbcUrl(InetAddress ipAddress, NetPort port, String database) {
+        String address = ipAddress.getAddress();
+        if(address.indexOf(':')==-1) return "jdbc:postgresql://"+address+":"+port+"/"+database;
+        return "jdbc:postgresql://["+address+"]:"+port+"/"+database;
     }
 }

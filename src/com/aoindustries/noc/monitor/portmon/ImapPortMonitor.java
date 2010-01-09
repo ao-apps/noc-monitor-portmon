@@ -5,6 +5,8 @@ package com.aoindustries.noc.monitor.portmon;
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
+import com.aoindustries.aoserv.client.validator.InetAddress;
+import com.aoindustries.aoserv.client.validator.NetPort;
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.IOException;
@@ -25,7 +27,7 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
 
     private final Map<String,String> monitoringParameters;
 
-    public ImapPortMonitor(String ipAddress, int port, Map<String,String> monitoringParameters) {
+    public ImapPortMonitor(InetAddress ipAddress, NetPort port, Map<String,String> monitoringParameters) {
         super(ipAddress, port);
         this.monitoringParameters = monitoringParameters;
     }

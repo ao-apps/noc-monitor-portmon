@@ -5,6 +5,8 @@ package com.aoindustries.noc.monitor.portmon;
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserve parameterd.
  */
+import com.aoindustries.aoserv.client.validator.InetAddress;
+import com.aoindustries.aoserv.client.validator.NetPort;
 import java.util.Map;
 
 /**
@@ -14,7 +16,7 @@ import java.util.Map;
  */
 public class MySQLPortMonitor extends JdbcPortMonitor {
 
-    public MySQLPortMonitor(String ipAddress, int port, Map<String,String> monitoringParameters) {
+    public MySQLPortMonitor(InetAddress ipAddress, NetPort port, Map<String,String> monitoringParameters) {
         super(ipAddress, port, monitoringParameters);
     }
 
@@ -24,7 +26,9 @@ public class MySQLPortMonitor extends JdbcPortMonitor {
     }
 
     @Override
-    protected String getJdbcUrl(String ipAddress, int port, String database) {
-        return "jdbc:mysql://"+ipAddress+":"+port+"/"+database;
+    protected String getJdbcUrl(InetAddress ipAddress, NetPort port, String database) {
+        String address = ipAddress.getAddress();
+        if(address.indexOf(':')==-1) return "jdbc:mysql://"+address+":"+port+"/"+database;
+        return "jdbc:mysql://["+address+"]:"+port+"/"+database;
     }
 }

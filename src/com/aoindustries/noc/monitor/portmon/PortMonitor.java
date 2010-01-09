@@ -5,9 +5,10 @@ package com.aoindustries.noc.monitor.portmon;
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
-import com.aoindustries.aoserv.client.IPAddress;
 import com.aoindustries.aoserv.client.NetProtocol;
 import com.aoindustries.aoserv.client.Protocol;
+import com.aoindustries.aoserv.client.validator.InetAddress;
+import com.aoindustries.aoserv.client.validator.NetPort;
 import java.util.Map;
 
 /**
@@ -22,7 +23,7 @@ public abstract class PortMonitor {
      * Factory method to get the best port monitor for the provided port
      * details.  If can't find any monitor, will through IllegalArgumentException.
      */
-    public static PortMonitor getPortMonitor(String ipAddress, int port, String netProtocol, String appProtocol, Map<String,String> monitoringParameters) throws IllegalArgumentException {
+    public static PortMonitor getPortMonitor(InetAddress ipAddress, NetPort port, String netProtocol, String appProtocol, Map<String,String> monitoringParameters) throws IllegalArgumentException {
         if(NetProtocol.UDP.equals(netProtocol)) {
             // UDP
             return new DefaultUdpPortMonitor(ipAddress, port);
@@ -32,7 +33,7 @@ public abstract class PortMonitor {
             if(Protocol.IMAP2.equals(appProtocol)) return new ImapPortMonitor(ipAddress, port, monitoringParameters);
             if(Protocol.MYSQL.equals(appProtocol)) return new MySQLPortMonitor(ipAddress, port, monitoringParameters);
             if(Protocol.POP3.equals(appProtocol)) return new Pop3PortMonitor(ipAddress, port, monitoringParameters);
-            if(Protocol.POSTGRESQL.equals(appProtocol) && !IPAddress.LOOPBACK_IP.equals(ipAddress)) return new PostgresSQLPortMonitor(ipAddress, port, monitoringParameters);
+            if(Protocol.POSTGRESQL.equals(appProtocol) && !ipAddress.isLooback()) return new PostgresSQLPortMonitor(ipAddress, port, monitoringParameters);
             if(Protocol.SMTP.equals(appProtocol) || Protocol.SUBMISSION.equals(appProtocol)) return new SmtpPortMonitor(ipAddress, port, monitoringParameters);
             if(Protocol.SSH.equals(appProtocol)) return new SshPortMonitor(ipAddress, port);
             return new DefaultTcpPortMonitor(ipAddress, port);
@@ -41,11 +42,11 @@ public abstract class PortMonitor {
         }
     }
 
-    protected final String ipAddress;
-    protected final int port;
+    protected final InetAddress ipAddress;
+    protected final NetPort port;
     protected volatile boolean canceled;
 
-    protected PortMonitor(String ipAddress, int port) {
+    protected PortMonitor(InetAddress ipAddress, NetPort port) {
         this.ipAddress = ipAddress;
         this.port = port;
     }

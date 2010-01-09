@@ -5,6 +5,8 @@ package com.aoindustries.noc.monitor.portmon;
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
+import com.aoindustries.aoserv.client.validator.InetAddress;
+import com.aoindustries.aoserv.client.validator.NetPort;
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.IOException;
@@ -22,7 +24,7 @@ import java.nio.charset.Charset;
  */
 public class SshPortMonitor extends DefaultTcpPortMonitor {
 
-    public SshPortMonitor(String ipAddress, int port) {
+    public SshPortMonitor(InetAddress ipAddress, NetPort port) {
         super(ipAddress, port);
     }
 
