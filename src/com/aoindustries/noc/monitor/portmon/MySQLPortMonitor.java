@@ -1,7 +1,7 @@
 package com.aoindustries.noc.monitor.portmon;
 
 /*
- * Copyright 2009 by AO Industries, Inc.,
+ * Copyright 2009-2011 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserve parameterd.
  */
@@ -27,7 +27,7 @@ public class MySQLPortMonitor extends JdbcPortMonitor {
 
     @Override
     protected String getJdbcUrl(InetAddress ipAddress, NetPort port, String database) {
-        String address = ipAddress.getAddress();
+        String address = ipAddress.toString();
         if(address.indexOf(':')==-1) return "jdbc:mysql://"+address+":"+port+"/"+database;
         return "jdbc:mysql://["+address+"]:"+port+"/"+database;
     }
