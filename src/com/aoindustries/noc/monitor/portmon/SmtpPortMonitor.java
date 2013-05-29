@@ -1,12 +1,11 @@
-package com.aoindustries.noc.monitor.portmon;
-
 /*
- * Copyright 2001-2011 by AO Industries, Inc.,
+ * Copyright 2001-2013 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
+package com.aoindustries.noc.monitor.portmon;
+
 import com.aoindustries.aoserv.client.validator.InetAddress;
-import com.aoindustries.aoserv.client.validator.NetPort;
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.IOException;
@@ -27,7 +26,7 @@ public class SmtpPortMonitor extends DefaultTcpPortMonitor {
 
     private final Map<String,String> monitoringParameters;
 
-    public SmtpPortMonitor(InetAddress ipAddress, NetPort port, Map<String,String> monitoringParameters) {
+    public SmtpPortMonitor(InetAddress ipAddress, int port, Map<String,String> monitoringParameters) {
         super(ipAddress, port);
         this.monitoringParameters = monitoringParameters;
     }

@@ -1,11 +1,10 @@
-package com.aoindustries.noc.monitor.portmon;
-
 /*
- * Copyright 2001-2011 by AO Industries, Inc.,
+ * Copyright 2001-2009 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
-import com.aoindustries.aoserv.client.validator.NetPort;
+package com.aoindustries.noc.monitor.portmon;
+
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
@@ -18,7 +17,7 @@ public class DefaultUdpPortMonitor extends PortMonitor {
 
     private volatile DatagramSocket datagramSocket;
 
-    public DefaultUdpPortMonitor(com.aoindustries.aoserv.client.validator.InetAddress ipAddress, NetPort port) {
+    public DefaultUdpPortMonitor(com.aoindustries.aoserv.client.validator.InetAddress ipAddress, int port) {
         super(ipAddress, port);
     }
 
@@ -33,7 +32,7 @@ public class DefaultUdpPortMonitor extends PortMonitor {
     public String checkPort() throws Exception {
         datagramSocket=new DatagramSocket();
         try {
-            datagramSocket.connect(InetAddress.getByName(ipAddress.toString()), port.getPort());
+            datagramSocket.connect(InetAddress.getByName(ipAddress.toString()), port);
         } finally {
             // datagramSocket.disconnect();
             datagramSocket.close();

@@ -1,12 +1,11 @@
-package com.aoindustries.noc.monitor.portmon;
-
 /*
- * Copyright 2001-2011 by AO Industries, Inc.,
+ * Copyright 2001-2013 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
+package com.aoindustries.noc.monitor.portmon;
+
 import com.aoindustries.aoserv.client.validator.InetAddress;
-import com.aoindustries.aoserv.client.validator.NetPort;
 import com.aoindustries.io.AOPool;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +28,7 @@ public class DefaultTcpPortMonitor extends PortMonitor {
 
     private volatile Socket socket;
 
-    public DefaultTcpPortMonitor(InetAddress ipAddress, NetPort port) {
+    public DefaultTcpPortMonitor(InetAddress ipAddress, int port) {
         super(ipAddress, port);
     }
 
@@ -54,7 +53,7 @@ public class DefaultTcpPortMonitor extends PortMonitor {
             socket.setSoLinger(true, AOPool.DEFAULT_SOCKET_SO_LINGER);
             //socket.setTcpNoDelay(true);
             socket.setSoTimeout(60000);
-            socket.connect(new InetSocketAddress(ipAddress.toString(), port.getPort()), 60*1000);
+            socket.connect(new InetSocketAddress(ipAddress.toString(), port), 60*1000);
 
             return checkPort(socket.getInputStream(), socket.getOutputStream());
         } finally {

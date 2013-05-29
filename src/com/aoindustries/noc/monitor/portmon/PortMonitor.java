@@ -1,14 +1,13 @@
-package com.aoindustries.noc.monitor.portmon;
-
 /*
- * Copyright 2001-2011 by AO Industries, Inc.,
+ * Copyright 2001-2013 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
+package com.aoindustries.noc.monitor.portmon;
+
 import com.aoindustries.aoserv.client.NetProtocol;
 import com.aoindustries.aoserv.client.Protocol;
 import com.aoindustries.aoserv.client.validator.InetAddress;
-import com.aoindustries.aoserv.client.validator.NetPort;
 import java.util.Map;
 
 /**
@@ -23,7 +22,7 @@ public abstract class PortMonitor {
      * Factory method to get the best port monitor for the provided port
      * details.  If can't find any monitor, will through IllegalArgumentException.
      */
-    public static PortMonitor getPortMonitor(InetAddress ipAddress, NetPort port, String netProtocol, String appProtocol, Map<String,String> monitoringParameters) throws IllegalArgumentException {
+    public static PortMonitor getPortMonitor(InetAddress ipAddress, int port, String netProtocol, String appProtocol, Map<String,String> monitoringParameters) throws IllegalArgumentException {
         if(NetProtocol.UDP.equals(netProtocol)) {
             // UDP
             return new DefaultUdpPortMonitor(ipAddress, port);
@@ -43,10 +42,10 @@ public abstract class PortMonitor {
     }
 
     protected final InetAddress ipAddress;
-    protected final NetPort port;
+    protected final int port;
     protected volatile boolean canceled;
 
-    protected PortMonitor(InetAddress ipAddress, NetPort port) {
+    protected PortMonitor(InetAddress ipAddress, int port) {
         this.ipAddress = ipAddress;
         this.port = port;
     }

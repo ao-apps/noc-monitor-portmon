@@ -1,12 +1,11 @@
 package com.aoindustries.noc.monitor.portmon;
 
 /*
- * Copyright 2009-2011 by AO Industries, Inc.,
+ * Copyright 2009 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserve parameterd.
  */
 import com.aoindustries.aoserv.client.validator.InetAddress;
-import com.aoindustries.aoserv.client.validator.NetPort;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -42,7 +41,7 @@ abstract public class JdbcPortMonitor extends PortMonitor {
 
     private final Map<String,String> monitoringParameters;
 
-    public JdbcPortMonitor(InetAddress ipAddress, NetPort port, Map<String,String> monitoringParameters) {
+    public JdbcPortMonitor(InetAddress ipAddress, int port, Map<String,String> monitoringParameters) {
         super(ipAddress, port);
         this.monitoringParameters = monitoringParameters;
     }
@@ -112,5 +111,5 @@ abstract public class JdbcPortMonitor extends PortMonitor {
     /**
      * Generates the JDBC URL.
      */
-    protected abstract String getJdbcUrl(InetAddress ipAddress, NetPort port, String database);
+    protected abstract String getJdbcUrl(InetAddress ipAddress, int port, String database);
 }
