@@ -8,7 +8,7 @@ package com.aoindustries.noc.monitor.portmon;
 import com.aoindustries.aoserv.client.NetProtocol;
 import com.aoindustries.aoserv.client.Protocol;
 import com.aoindustries.aoserv.client.validator.InetAddress;
-import java.util.Map;
+import com.aoindustries.net.HttpParameters;
 
 /**
  * A <code>PortMonitor</code> connects to a service on a port and verifies it is
@@ -22,7 +22,7 @@ public abstract class PortMonitor {
      * Factory method to get the best port monitor for the provided port
      * details.  If can't find any monitor, will through IllegalArgumentException.
      */
-    public static PortMonitor getPortMonitor(InetAddress ipAddress, int port, String netProtocol, String appProtocol, Map<String,String> monitoringParameters) throws IllegalArgumentException {
+    public static PortMonitor getPortMonitor(InetAddress ipAddress, int port, String netProtocol, String appProtocol, HttpParameters monitoringParameters) throws IllegalArgumentException {
         if(NetProtocol.UDP.equals(netProtocol)) {
             // UDP
             return new DefaultUdpPortMonitor(ipAddress, port);

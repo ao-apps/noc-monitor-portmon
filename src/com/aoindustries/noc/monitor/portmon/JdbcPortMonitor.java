@@ -1,18 +1,18 @@
-package com.aoindustries.noc.monitor.portmon;
-
 /*
- * Copyright 2009 by AO Industries, Inc.,
+ * Copyright 2009-2013 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserve parameterd.
  */
+package com.aoindustries.noc.monitor.portmon;
+
 import com.aoindustries.aoserv.client.validator.InetAddress;
+import com.aoindustries.net.HttpParameters;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
@@ -39,9 +39,9 @@ abstract public class JdbcPortMonitor extends PortMonitor {
         }
     }
 
-    private final Map<String,String> monitoringParameters;
+    private final HttpParameters monitoringParameters;
 
-    public JdbcPortMonitor(InetAddress ipAddress, int port, Map<String,String> monitoringParameters) {
+    public JdbcPortMonitor(InetAddress ipAddress, int port, HttpParameters monitoringParameters) {
         super(ipAddress, port);
         this.monitoringParameters = monitoringParameters;
     }
@@ -51,13 +51,13 @@ abstract public class JdbcPortMonitor extends PortMonitor {
     @Override
     final public String checkPort() throws Exception {
         // Get the configuration
-        String username = monitoringParameters.get("username");
+        String username = monitoringParameters.getParameter("username");
         if(username==null || username.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the username parameter");
-        String password = monitoringParameters.get("password");
+        String password = monitoringParameters.getParameter("password");
         if(password==null || password.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the password parameter");
-        String database = monitoringParameters.get("database");
+        String database = monitoringParameters.getParameter("database");
         if(database==null || database.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the database parameter");
-        String query = monitoringParameters.get("query");
+        String query = monitoringParameters.getParameter("query");
         if(query==null || query.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the query parameter");
 
         loadDriver(getDriver());

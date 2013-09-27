@@ -6,6 +6,7 @@
 package com.aoindustries.noc.monitor.portmon;
 
 import com.aoindustries.aoserv.client.validator.InetAddress;
+import com.aoindustries.net.HttpParameters;
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.IOException;
@@ -15,7 +16,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
-import java.util.Map;
 
 /**
  * Monitors with SMTP-specific protocol support.
@@ -24,9 +24,9 @@ import java.util.Map;
  */
 public class SmtpPortMonitor extends DefaultTcpPortMonitor {
 
-    private final Map<String,String> monitoringParameters;
+    private final HttpParameters monitoringParameters;
 
-    public SmtpPortMonitor(InetAddress ipAddress, int port, Map<String,String> monitoringParameters) {
+    public SmtpPortMonitor(InetAddress ipAddress, int port, HttpParameters monitoringParameters) {
         super(ipAddress, port);
         this.monitoringParameters = monitoringParameters;
     }
@@ -34,9 +34,9 @@ public class SmtpPortMonitor extends DefaultTcpPortMonitor {
     @Override
     public String checkPort(InputStream socketIn, OutputStream socketOut) throws Exception {
         // Get the configuration
-        String from = monitoringParameters.get("from");
+        String from = monitoringParameters.getParameter("from");
         if(from==null || from.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the from parameter");
-        String recipient = monitoringParameters.get("recipient");
+        String recipient = monitoringParameters.getParameter("recipient");
         if(recipient==null || recipient.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the recipient parameter");
 
         Charset charset = Charset.forName("US-ASCII");

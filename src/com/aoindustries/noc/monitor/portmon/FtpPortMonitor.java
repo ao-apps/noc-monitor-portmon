@@ -6,6 +6,7 @@
 package com.aoindustries.noc.monitor.portmon;
 
 import com.aoindustries.aoserv.client.validator.InetAddress;
+import com.aoindustries.net.HttpParameters;
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.IOException;
@@ -15,7 +16,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
-import java.util.Map;
 
 /**
  * Monitors with FTP-specific protocol support.
@@ -24,9 +24,9 @@ import java.util.Map;
  */
 public class FtpPortMonitor extends DefaultTcpPortMonitor {
 
-    private final Map<String,String> monitoringParameters;
+    private final HttpParameters monitoringParameters;
 
-    public FtpPortMonitor(InetAddress ipAddress, int port, Map<String,String> monitoringParameters) {
+    public FtpPortMonitor(InetAddress ipAddress, int port, HttpParameters monitoringParameters) {
         super(ipAddress, port);
         this.monitoringParameters = monitoringParameters;
     }
@@ -34,9 +34,9 @@ public class FtpPortMonitor extends DefaultTcpPortMonitor {
     @Override
     public String checkPort(InputStream socketIn, OutputStream socketOut) throws Exception {
         // Get the configuration
-        String username = monitoringParameters.get("username");
+        String username = monitoringParameters.getParameter("username");
         if(username==null || username.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the username");
-        String password = monitoringParameters.get("password");
+        String password = monitoringParameters.getParameter("password");
         if(password==null || password.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the password");
 
         Charset charset = Charset.forName("US-ASCII");
