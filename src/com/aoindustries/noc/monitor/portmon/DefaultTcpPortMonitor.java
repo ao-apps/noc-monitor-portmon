@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 by AO Industries, Inc.,
+ * Copyright 2001-2013, 2016 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
@@ -24,48 +24,48 @@ import java.util.logging.Logger;
  */
 public class DefaultTcpPortMonitor extends PortMonitor {
 
-    private static final Logger logger = Logger.getLogger(DefaultTcpPortMonitor.class.getName());
+	private static final Logger logger = Logger.getLogger(DefaultTcpPortMonitor.class.getName());
 
-    private volatile Socket socket;
+	private volatile Socket socket;
 
-    public DefaultTcpPortMonitor(InetAddress ipAddress, int port) {
-        super(ipAddress, port);
-    }
+	public DefaultTcpPortMonitor(InetAddress ipAddress, int port) {
+		super(ipAddress, port);
+	}
 
-    @Override
-    public void cancel() {
-        super.cancel();
-        Socket mySocket = socket;
-        if(mySocket!=null) {
-            try {
-                mySocket.close();
-            } catch(IOException err) {
-                logger.log(Level.WARNING, null, err);
-            }
-        }
-    }
+	@Override
+	public void cancel() {
+		super.cancel();
+		Socket mySocket = socket;
+		if(mySocket!=null) {
+			try {
+				mySocket.close();
+			} catch(IOException err) {
+				logger.log(Level.WARNING, null, err);
+			}
+		}
+	}
 
-    @Override
-    final public String checkPort() throws Exception {
-        socket=new Socket();
-        try {
-            socket.setKeepAlive(true);
-            socket.setSoLinger(true, AOPool.DEFAULT_SOCKET_SO_LINGER);
-            //socket.setTcpNoDelay(true);
-            socket.setSoTimeout(60000);
-            socket.connect(new InetSocketAddress(ipAddress.toString(), port), 60*1000);
+	@Override
+	final public String checkPort() throws Exception {
+		socket=new Socket();
+		try {
+			socket.setKeepAlive(true);
+			socket.setSoLinger(true, AOPool.DEFAULT_SOCKET_SO_LINGER);
+			//socket.setTcpNoDelay(true);
+			socket.setSoTimeout(60000);
+			socket.connect(new InetSocketAddress(ipAddress.toString(), port), 60*1000);
 
-            return checkPort(socket.getInputStream(), socket.getOutputStream());
-        } finally {
-            socket.close();
-        }
-    }
+			return checkPort(socket.getInputStream(), socket.getOutputStream());
+		} finally {
+			socket.close();
+		}
+	}
 
-    /**
-     * Performs any protocol-specific monitoring.  This default implementation does
-     * nothing.
-     */
-    protected String checkPort(InputStream in, OutputStream out) throws Exception {
-        return "Connected successfully";
-    }
+	/**
+	 * Performs any protocol-specific monitoring.  This default implementation does
+	 * nothing.
+	 */
+	protected String checkPort(InputStream in, OutputStream out) throws Exception {
+		return "Connected successfully";
+	}
 }

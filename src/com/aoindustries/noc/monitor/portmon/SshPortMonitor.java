@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 by AO Industries, Inc.,
+ * Copyright 2001-2013, 2016 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
@@ -23,28 +23,23 @@ import java.nio.charset.Charset;
  */
 public class SshPortMonitor extends DefaultTcpPortMonitor {
 
-    public SshPortMonitor(InetAddress ipAddress, int port) {
-        super(ipAddress, port);
-    }
+	public SshPortMonitor(InetAddress ipAddress, int port) {
+		super(ipAddress, port);
+	}
 
-    @Override
-    public String checkPort(InputStream socketIn, OutputStream socketOut) throws Exception {
-        Charset charset = Charset.forName("US-ASCII");
-        PrintWriter out = new PrintWriter(new OutputStreamWriter(socketOut, charset));
-        try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(socketIn, charset));
-            try {
-                // Status line
-                String line = in.readLine();
-                if(line==null) throw new EOFException("End of file reading status");
-                if(!line.startsWith("SSH-")) throw new IOException("Unexpected status line: "+line);
-                // Return OK result
-                return line;
-            } finally {
-                in.close();
-            }
-        } finally {
-            out.close();
-        }
-    }
+	@Override
+	public String checkPort(InputStream socketIn, OutputStream socketOut) throws Exception {
+		Charset charset = Charset.forName("US-ASCII");
+		try (
+			PrintWriter out = new PrintWriter(new OutputStreamWriter(socketOut, charset));
+			BufferedReader in = new BufferedReader(new InputStreamReader(socketIn, charset))
+		) {
+			// Status line
+			String line = in.readLine();
+			if(line==null) throw new EOFException("End of file reading status");
+			if(!line.startsWith("SSH-")) throw new IOException("Unexpected status line: "+line);
+			// Return OK result
+			return line;
+		}
+	}
 }
