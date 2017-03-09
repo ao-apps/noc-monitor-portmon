@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013, 2016 by AO Industries, Inc.,
+ * Copyright 2001-2013, 2016, 2017 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
@@ -13,6 +13,8 @@ import com.aoindustries.net.HttpParameters;
 /**
  * A <code>PortMonitor</code> connects to a service on a port and verifies it is
  * working correctly.  The monitor will only be used at most once per instance.
+ *
+ * TODO: Support chronyd protocol: chronyc tracking
  *
  * @author  AO Industries, Inc.
  */
