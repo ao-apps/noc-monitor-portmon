@@ -7,8 +7,8 @@ package com.aoindustries.noc.monitor.portmon;
 
 import com.aoindustries.aoserv.client.NetProtocol;
 import com.aoindustries.aoserv.client.Protocol;
-import com.aoindustries.aoserv.client.validator.InetAddress;
 import com.aoindustries.net.HttpParameters;
+import com.aoindustries.net.InetAddress;
 
 /**
  * A <code>PortMonitor</code> connects to a service on a port and verifies it is

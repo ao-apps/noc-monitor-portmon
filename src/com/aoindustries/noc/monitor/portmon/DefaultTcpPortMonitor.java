@@ -1,12 +1,12 @@
 /*
- * Copyright 2001-2013, 2016 by AO Industries, Inc.,
+ * Copyright 2001-2013, 2016, 2017 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
 package com.aoindustries.noc.monitor.portmon;
 
-import com.aoindustries.aoserv.client.validator.InetAddress;
 import com.aoindustries.io.AOPool;
+import com.aoindustries.net.InetAddress;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;

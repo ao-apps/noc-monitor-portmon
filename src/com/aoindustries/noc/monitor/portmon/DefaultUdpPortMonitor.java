@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2009, 2016 by AO Industries, Inc.,
+ * Copyright 2001-2009, 2016, 2017 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
@@ -17,7 +17,7 @@ public class DefaultUdpPortMonitor extends PortMonitor {
 
 	private volatile DatagramSocket datagramSocket;
 
-	public DefaultUdpPortMonitor(com.aoindustries.aoserv.client.validator.InetAddress ipAddress, int port) {
+	public DefaultUdpPortMonitor(com.aoindustries.net.InetAddress ipAddress, int port) {
 		super(ipAddress, port);
 	}
 
