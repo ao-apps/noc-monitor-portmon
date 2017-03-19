@@ -5,10 +5,10 @@
  */
 package com.aoindustries.noc.monitor.portmon;
 
-import com.aoindustries.aoserv.client.NetProtocol;
 import com.aoindustries.aoserv.client.Protocol;
 import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
+import com.aoindustries.net.Port;
 
 /**
  * A <code>PortMonitor</code> connects to a service on a port and verifies it is
@@ -24,23 +24,24 @@ public abstract class PortMonitor {
 	 * Factory method to get the best port monitor for the provided port
 	 * details.  If can't find any monitor, will through IllegalArgumentException.
 	 */
-	public static PortMonitor getPortMonitor(InetAddress ipAddress, int port, String netProtocol, String appProtocol, HttpParameters monitoringParameters) throws IllegalArgumentException {
+	public static PortMonitor getPortMonitor(InetAddress ipAddress, Port port, String appProtocol, HttpParameters monitoringParameters) throws IllegalArgumentException {
+		com.aoindustries.net.Protocol netProtocol = port.getProtocol();
 		switch (netProtocol) {
-			case NetProtocol.UDP:
+			case UDP:
 				// UDP
-				return new DefaultUdpPortMonitor(ipAddress, port);
-			case NetProtocol.TCP:
+				return new DefaultUdpPortMonitor(ipAddress, port.getPort());
+			case TCP:
 				// TCP
-				if(Protocol.FTP.equals(appProtocol)) return new FtpPortMonitor(ipAddress, port, monitoringParameters);
-				if(Protocol.IMAP2.equals(appProtocol)) return new ImapPortMonitor(ipAddress, port, monitoringParameters);
-				if(Protocol.MYSQL.equals(appProtocol)) return new MySQLPortMonitor(ipAddress, port, monitoringParameters);
-				if(Protocol.POP3.equals(appProtocol)) return new Pop3PortMonitor(ipAddress, port, monitoringParameters);
-				if(Protocol.POSTGRESQL.equals(appProtocol) && !ipAddress.isLooback()) return new PostgresSQLPortMonitor(ipAddress, port, monitoringParameters);
-				if(Protocol.SMTP.equals(appProtocol) || Protocol.SUBMISSION.equals(appProtocol)) return new SmtpPortMonitor(ipAddress, port, monitoringParameters);
-				if(Protocol.SSH.equals(appProtocol)) return new SshPortMonitor(ipAddress, port);
-				return new DefaultTcpPortMonitor(ipAddress, port);
+				if(Protocol.FTP.equals(appProtocol)) return new FtpPortMonitor(ipAddress, port.getPort(), monitoringParameters);
+				if(Protocol.IMAP2.equals(appProtocol)) return new ImapPortMonitor(ipAddress, port.getPort(), monitoringParameters);
+				if(Protocol.MYSQL.equals(appProtocol)) return new MySQLPortMonitor(ipAddress, port.getPort(), monitoringParameters);
+				if(Protocol.POP3.equals(appProtocol)) return new Pop3PortMonitor(ipAddress, port.getPort(), monitoringParameters);
+				if(Protocol.POSTGRESQL.equals(appProtocol) && !ipAddress.isLooback()) return new PostgresSQLPortMonitor(ipAddress, port.getPort(), monitoringParameters);
+				if(Protocol.SMTP.equals(appProtocol) || Protocol.SUBMISSION.equals(appProtocol)) return new SmtpPortMonitor(ipAddress, port.getPort(), monitoringParameters);
+				if(Protocol.SSH.equals(appProtocol)) return new SshPortMonitor(ipAddress, port.getPort());
+				return new DefaultTcpPortMonitor(ipAddress, port.getPort());
 			default:
-				throw new IllegalArgumentException("Unable to find port monitor: ipAddress=\""+ipAddress+"\", port="+port+", netProtocol=\""+netProtocol+"\", appProtocol=\""+appProtocol+"\"");
+				throw new IllegalArgumentException("Unable to find port monitor: ipAddress=\""+ipAddress+"\", port="+port+", appProtocol=\""+appProtocol+"\"");
 		}
 	}
 
