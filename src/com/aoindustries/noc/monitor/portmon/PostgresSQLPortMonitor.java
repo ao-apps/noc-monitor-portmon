@@ -8,6 +8,7 @@ package com.aoindustries.noc.monitor.portmon;
 import com.aoindustries.aoserv.client.PostgresDatabase;
 import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
+import com.aoindustries.net.Port;
 
 /**
  * Monitors a PostgreSQL database.
@@ -16,7 +17,7 @@ import com.aoindustries.net.InetAddress;
  */
 public class PostgresSQLPortMonitor extends JdbcPortMonitor {
 
-	public PostgresSQLPortMonitor(InetAddress ipAddress, int port, HttpParameters monitoringParameters) {
+	public PostgresSQLPortMonitor(InetAddress ipAddress, Port port, HttpParameters monitoringParameters) {
 		super(ipAddress, port, monitoringParameters);
 	}
 

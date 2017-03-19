@@ -7,6 +7,8 @@ package com.aoindustries.noc.monitor.portmon;
 
 import com.aoindustries.io.AOPool;
 import com.aoindustries.net.InetAddress;
+import com.aoindustries.net.Port;
+import com.aoindustries.net.Protocol;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -28,8 +30,9 @@ public class DefaultTcpPortMonitor extends PortMonitor {
 
 	private volatile Socket socket;
 
-	public DefaultTcpPortMonitor(InetAddress ipAddress, int port) {
+	public DefaultTcpPortMonitor(InetAddress ipAddress, Port port) {
 		super(ipAddress, port);
+		if(port.getProtocol() != Protocol.TCP) throw new IllegalArgumentException("port not TCP: " + port);
 	}
 
 	@Override
@@ -53,7 +56,7 @@ public class DefaultTcpPortMonitor extends PortMonitor {
 			socket.setSoLinger(true, AOPool.DEFAULT_SOCKET_SO_LINGER);
 			//socket.setTcpNoDelay(true);
 			socket.setSoTimeout(60000);
-			socket.connect(new InetSocketAddress(ipAddress.toString(), port), 60*1000);
+			socket.connect(new InetSocketAddress(ipAddress.toString(), port.getPort()), 60*1000);
 
 			return checkPort(socket.getInputStream(), socket.getOutputStream());
 		} finally {

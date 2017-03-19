@@ -6,6 +6,7 @@
 package com.aoindustries.noc.monitor.portmon;
 
 import com.aoindustries.net.InetAddress;
+import com.aoindustries.net.Port;
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.IOException;
@@ -23,7 +24,7 @@ import java.nio.charset.Charset;
  */
 public class SshPortMonitor extends DefaultTcpPortMonitor {
 
-	public SshPortMonitor(InetAddress ipAddress, int port) {
+	public SshPortMonitor(InetAddress ipAddress, Port port) {
 		super(ipAddress, port);
 	}
 

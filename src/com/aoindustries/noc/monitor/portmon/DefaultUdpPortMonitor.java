@@ -5,6 +5,8 @@
  */
 package com.aoindustries.noc.monitor.portmon;
 
+import com.aoindustries.net.Port;
+import com.aoindustries.net.Protocol;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
@@ -17,8 +19,9 @@ public class DefaultUdpPortMonitor extends PortMonitor {
 
 	private volatile DatagramSocket datagramSocket;
 
-	public DefaultUdpPortMonitor(com.aoindustries.net.InetAddress ipAddress, int port) {
+	public DefaultUdpPortMonitor(com.aoindustries.net.InetAddress ipAddress, Port port) {
 		super(ipAddress, port);
+		if(port.getProtocol() != Protocol.UDP) throw new IllegalArgumentException("port not UDP: " + port);
 	}
 
 	@Override
@@ -32,7 +35,7 @@ public class DefaultUdpPortMonitor extends PortMonitor {
 	public String checkPort() throws Exception {
 		datagramSocket=new DatagramSocket();
 		try {
-			datagramSocket.connect(InetAddress.getByName(ipAddress.toString()), port);
+			datagramSocket.connect(InetAddress.getByName(ipAddress.toString()), port.getPort());
 		} finally {
 			// datagramSocket.disconnect();
 			datagramSocket.close();

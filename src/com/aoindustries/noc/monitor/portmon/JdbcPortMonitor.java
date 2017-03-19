@@ -7,6 +7,7 @@ package com.aoindustries.noc.monitor.portmon;
 
 import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
+import com.aoindustries.net.Port;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -41,7 +42,7 @@ abstract public class JdbcPortMonitor extends PortMonitor {
 
 	private final HttpParameters monitoringParameters;
 
-	public JdbcPortMonitor(InetAddress ipAddress, int port, HttpParameters monitoringParameters) {
+	public JdbcPortMonitor(InetAddress ipAddress, Port port, HttpParameters monitoringParameters) {
 		super(ipAddress, port);
 		this.monitoringParameters = monitoringParameters;
 	}
@@ -62,7 +63,7 @@ abstract public class JdbcPortMonitor extends PortMonitor {
 
 		loadDriver(getDriver());
 		conn = DriverManager.getConnection(
-			getJdbcUrl(ipAddress, port, database),
+			getJdbcUrl(ipAddress, port.getPort(), database),
 			username,
 			password
 		);

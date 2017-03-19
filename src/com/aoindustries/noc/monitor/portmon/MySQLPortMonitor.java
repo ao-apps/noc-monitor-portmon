@@ -7,6 +7,7 @@ package com.aoindustries.noc.monitor.portmon;
 
 import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
+import com.aoindustries.net.Port;
 
 /**
  * Monitors a MySQL database.
@@ -15,7 +16,7 @@ import com.aoindustries.net.InetAddress;
  */
 public class MySQLPortMonitor extends JdbcPortMonitor {
 
-	public MySQLPortMonitor(InetAddress ipAddress, int port, HttpParameters monitoringParameters) {
+	public MySQLPortMonitor(InetAddress ipAddress, Port port, HttpParameters monitoringParameters) {
 		super(ipAddress, port, monitoringParameters);
 	}
 
