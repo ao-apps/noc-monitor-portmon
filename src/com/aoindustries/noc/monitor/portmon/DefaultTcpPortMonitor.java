@@ -71,7 +71,7 @@ public class DefaultTcpPortMonitor extends PortMonitor {
 	final public String checkPort() throws Exception {
 		socket = connect();
 		try {
-			return checkPort(socket.getInputStream(), socket.getOutputStream());
+			return checkPort(socket, socket.getInputStream(), socket.getOutputStream());
 		} finally {
 			socket.close();
 		}
@@ -83,7 +83,7 @@ public class DefaultTcpPortMonitor extends PortMonitor {
 	 * Performs any protocol-specific monitoring.  This default implementation does
 	 * nothing.
 	 */
-	protected String checkPort(InputStream in, OutputStream out) throws Exception {
+	protected String checkPort(Socket socket, InputStream in, OutputStream out) throws Exception {
 		return CONNECTED_SUCCESSFULLY;
 	}
 }

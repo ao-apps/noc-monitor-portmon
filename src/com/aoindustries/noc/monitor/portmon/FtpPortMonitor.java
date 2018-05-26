@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013, 2016, 2017 by AO Industries, Inc.,
+ * Copyright 2001-2013, 2016, 2017, 2018 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
@@ -9,13 +9,14 @@ import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.net.Socket;
 import java.nio.charset.Charset;
 
 /**
@@ -33,7 +34,7 @@ public class FtpPortMonitor extends DefaultTcpPortMonitor {
 	}
 
 	@Override
-	public String checkPort(InputStream socketIn, OutputStream socketOut) throws Exception {
+	public String checkPort(Socket socket, InputStream socketIn, OutputStream socketOut) throws Exception {
 		// Get the configuration
 		String username = monitoringParameters.getParameter("username");
 		if(username==null || username.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the username");
@@ -42,7 +43,7 @@ public class FtpPortMonitor extends DefaultTcpPortMonitor {
 
 		Charset charset = Charset.forName("US-ASCII");
 		try (
-			PrintWriter out = new PrintWriter(new OutputStreamWriter(socketOut, charset));
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socketOut, charset));
 			BufferedReader in = new BufferedReader(new InputStreamReader(socketIn, charset))
 		) {
 			// Status line
@@ -50,20 +51,24 @@ public class FtpPortMonitor extends DefaultTcpPortMonitor {
 			if(line==null) throw new EOFException("End of file reading status");
 			if(!line.startsWith("220 ")) throw new IOException("Unexpected status line: "+line);
 			// User
-			out.println("user "+username);
+			out.write("user ");
+			out.write(username);
+			out.write(CRLF);
 			out.flush();
 			line = in.readLine();
 			if(line==null) throw new EOFException("End of file reading user response");
 			if(!line.startsWith("331 ")) throw new IOException("Unexpected line reading user response: "+line);
 			// Pass
-			out.println("pass "+password);
+			out.write("pass ");
+			out.write(password);
+			out.write(CRLF);
 			out.flush();
 			line = in.readLine();
 			if(line==null) throw new EOFException("End of file reading pass response");
 			if(!line.startsWith("230 ")) throw new IOException("Unexpected line reading pass response: "+line);
 			String result = line.substring(4);
 			// Quit
-			out.println("quit");
+			out.write("quit" + CRLF);
 			out.flush();
 			line = in.readLine();
 			if(line==null) throw new EOFException("End of file reading quit response");

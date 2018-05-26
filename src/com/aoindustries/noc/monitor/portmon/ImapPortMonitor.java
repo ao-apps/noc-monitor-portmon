@@ -43,15 +43,22 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
 		return false;
 	}
 
-	private static void logout(Reader in, Writer out, StringBuilder buffer, String key) throws IOException {
-		out.write(key);
-		out.write(" LOGOUT" + CRLF);
+	/**
+	 * Unique tags used in protocol.
+	 */
+	private static final String
+		TAG_STARTTLS = "AA",
+		TAG_LOGIN    = "AB",
+		TAG_LOGOUT   = "AC";
+
+	private static void logout(Reader in, Writer out, StringBuilder buffer) throws IOException {
+		out.write(TAG_LOGOUT + " LOGOUT" + CRLF);
 		out.flush();
 		String line = readLine(in, buffer);
 		if(line==null) throw new EOFException("End of file reading logout response line 1");
-		if(!line.startsWith("* BYE") && !line.startsWith(key + " OK LOGOUT")) throw new IOException("Unexpected line reading logout response line 1: "+line);
+		if(!line.startsWith("* BYE") && !line.startsWith(TAG_LOGOUT + " OK LOGOUT")) throw new IOException("Unexpected line reading logout response line 1: "+line);
 		//if(line==null) throw new EOFException("End of file reading logout response line 2");
-		//if(!line.startsWith("* BYE") && !line.startsWith(key + " OK LOGOUT")) throw new IOException("Unexpected line reading logout response line 2: "+line);
+		//if(!line.startsWith("* BYE") && !line.startsWith(TAG_LOGOUT + " OK LOGOUT")) throw new IOException("Unexpected line reading logout response line 2: "+line);
 	}
 
 	@Override
@@ -63,7 +70,7 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
 			if(username==null || username.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the username");
 			String password = monitoringParameters.getParameter("password");
 			if(password==null || password.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the password");
-			// Use SSL unless explicitely disabled with ssl=false
+			// Use SSL unless explicitely disabled with starttls=false
 			boolean starttls = !isSsl() && !"false".equalsIgnoreCase(monitoringParameters.getParameter("starttls"));
 
 			final StringBuilder buffer = new StringBuilder();
@@ -95,15 +102,15 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
 							&& !capability.endsWith(" STARTTLS")
 						) {
 							// Logout
-							logout(in, out, buffer, "AA");
+							logout(in, out, buffer);
 							throw new IOException("Server does not support STARTTLS: " + capability);
 						}
 						// STARTTLS
-						out.write("STARTTLS" + CRLF);
+						out.write(TAG_STARTTLS + "STARTTLS" + CRLF);
 						out.flush();
 						line = readLine(in, buffer);
 						if(line == null) throw new EOFException("End of file reading STARTTLS response");
-						if(!line.startsWith("220 2.0.0 ")) throw new IOException("Unexpected line reading STARTTLS response: " + line);
+						if(!line.startsWith(TAG_STARTTLS + " OK ")) throw new IOException("Unexpected line reading STARTTLS response: " + line);
 						// Wrap in SSL
 						SSLSocketFactory sslFact = (SSLSocketFactory)SSLSocketFactory.getDefault();
 						sslSocket = sslFact.createSocket(socket, ipAddress.toString(), port.getPort(), false);
@@ -111,7 +118,7 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
 						in = new BufferedReader(new InputStreamReader(sslSocket.getInputStream(), charset));
 					}
 					// Login
-					out.write("AA LOGIN ");
+					out.write(TAG_LOGIN + " LOGIN ");
 					out.write(username);
 					out.write(" \"");
 					out.write(password);
@@ -120,10 +127,10 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
 					line = readLine(in, buffer);
 					if(line==null) throw new EOFException("End of file reading login response");
 					bracketPos = line.indexOf(']');
-					if(!line.startsWith("AA OK [CAPABILITY ") || bracketPos==-1) throw new IOException("Unexpected line reading login response: "+line);
+					if(!line.startsWith(TAG_LOGIN + " OK [CAPABILITY ") || bracketPos==-1) throw new IOException("Unexpected line reading login response: "+line);
 					String result = line.substring(bracketPos+1).trim();
 					// Logout
-					logout(in, out, buffer, "AB");
+					logout(in, out, buffer);
 					// Return OK result
 					return result;
 				} finally {
