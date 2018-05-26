@@ -28,6 +28,8 @@ public class DefaultTcpPortMonitor extends PortMonitor {
 
 	private static final Logger logger = Logger.getLogger(DefaultTcpPortMonitor.class.getName());
 
+	protected static final int TIMEOUT = 60_000;
+
 	private volatile Socket socket;
 
 	public DefaultTcpPortMonitor(InetAddress ipAddress, Port port) {
@@ -58,8 +60,8 @@ public class DefaultTcpPortMonitor extends PortMonitor {
 			s.setKeepAlive(true);
 			s.setSoLinger(true, AOPool.DEFAULT_SOCKET_SO_LINGER);
 			//s.setTcpNoDelay(true);
-			s.setSoTimeout(60000);
-			s.connect(new InetSocketAddress(ipAddress.toString(), port.getPort()), 60*1000);
+			s.setSoTimeout(TIMEOUT);
+			s.connect(new InetSocketAddress(ipAddress.toString(), port.getPort()), TIMEOUT);
 			successful = true;
 			return s;
 		} finally {
