@@ -106,7 +106,7 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
 							throw new IOException("Server does not support STARTTLS: " + capability);
 						}
 						// STARTTLS
-						out.write(TAG_STARTTLS + "STARTTLS" + CRLF);
+						out.write(TAG_STARTTLS + " STARTTLS" + CRLF);
 						out.flush();
 						line = readLine(in, buffer);
 						if(line == null) throw new EOFException("End of file reading STARTTLS response");
