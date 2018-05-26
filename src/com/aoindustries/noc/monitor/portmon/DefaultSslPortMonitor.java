@@ -47,7 +47,7 @@ public class DefaultSslPortMonitor extends DefaultTcpPortMonitor {
 	@Override
 	public String checkPort(Socket socket, InputStream socketIn, OutputStream socketOut) throws Exception {
 		if(ssl) {
-			return super.checkPort(socket, socketIn, socketOut);
+			return CONNECTED_SUCCESSFULLY + " over SSL";
 		} else {
 			return CONNECTED_SUCCESSFULLY + " (SSL disabled)";
 		}
