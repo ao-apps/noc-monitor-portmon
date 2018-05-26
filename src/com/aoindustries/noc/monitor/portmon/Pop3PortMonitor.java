@@ -60,7 +60,7 @@ public class Pop3PortMonitor extends DefaultTcpPortMonitor {
 			if(username==null || username.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the username");
 			String password = monitoringParameters.getParameter("password");
 			if(password==null || password.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the password");
-			// Use SSL unless explicitely disabled with starttls=false
+			// Use SSL unless explicitely disabled with ssl=false
 			boolean starttls = !isSsl() && !"false".equalsIgnoreCase(monitoringParameters.getParameter("starttls"));
 
 			final StringBuilder buffer = new StringBuilder();

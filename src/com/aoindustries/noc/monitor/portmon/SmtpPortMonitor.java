@@ -68,7 +68,7 @@ public class SmtpPortMonitor extends DefaultTcpPortMonitor {
 			if(recipient == null) {
 				throw new IllegalArgumentException("monitoringParameters does not include the recipient parameter");
 			}
-			// Use SSL unless explicitely disabled with starttls=false
+			// Use SSL unless explicitely disabled with ssl=false
 			boolean starttls = !isSsl() && !"false".equalsIgnoreCase(monitoringParameters.getParameter("starttls"));
 			// Optional for authenticated SMTP
 			String username = StringUtility.nullIfEmpty(monitoringParameters.getParameter("username"));
