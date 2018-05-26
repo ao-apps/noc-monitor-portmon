@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013, 2016, 2017 by AO Industries, Inc.,
+ * Copyright 2001-2013, 2016, 2017, 2018 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
@@ -48,27 +48,42 @@ public class DefaultTcpPortMonitor extends PortMonitor {
 		}
 	}
 
+	/**
+	 * Gets the socket to use for this port connection.
+	 */
+	protected Socket connect() throws Exception {
+		boolean successful = false;
+		Socket s = new Socket();
+		try {
+			s.setKeepAlive(true);
+			s.setSoLinger(true, AOPool.DEFAULT_SOCKET_SO_LINGER);
+			//s.setTcpNoDelay(true);
+			s.setSoTimeout(60000);
+			s.connect(new InetSocketAddress(ipAddress.toString(), port.getPort()), 60*1000);
+			successful = true;
+			return s;
+		} finally {
+			if(!successful) s.close();
+		}
+	}
+
 	@Override
 	final public String checkPort() throws Exception {
-		socket=new Socket();
+		socket = connect();
 		try {
-			socket.setKeepAlive(true);
-			socket.setSoLinger(true, AOPool.DEFAULT_SOCKET_SO_LINGER);
-			//socket.setTcpNoDelay(true);
-			socket.setSoTimeout(60000);
-			socket.connect(new InetSocketAddress(ipAddress.toString(), port.getPort()), 60*1000);
-
 			return checkPort(socket.getInputStream(), socket.getOutputStream());
 		} finally {
 			socket.close();
 		}
 	}
 
+	protected static final String CONNECTED_SUCCESSFULLY = "Connected successfully";
+
 	/**
 	 * Performs any protocol-specific monitoring.  This default implementation does
 	 * nothing.
 	 */
 	protected String checkPort(InputStream in, OutputStream out) throws Exception {
-		return "Connected successfully";
+		return CONNECTED_SUCCESSFULLY;
 	}
 }
