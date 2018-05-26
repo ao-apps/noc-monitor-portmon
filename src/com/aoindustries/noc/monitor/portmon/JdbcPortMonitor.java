@@ -40,11 +40,17 @@ abstract public class JdbcPortMonitor extends PortMonitor {
 		}
 	}
 
+	protected static final int TIMEOUT = DefaultTcpPortMonitor.TIMEOUT;
+
 	private final HttpParameters monitoringParameters;
+
+	protected final boolean readOnly;
 
 	public JdbcPortMonitor(InetAddress ipAddress, Port port, HttpParameters monitoringParameters) {
 		super(ipAddress, port);
 		this.monitoringParameters = monitoringParameters;
+		// Is read-only unless explicitely disabled with readOnly=false
+		readOnly = !"false".equalsIgnoreCase(monitoringParameters.getParameter("readOnly"));
 	}
 
 	private volatile Connection conn;
@@ -68,6 +74,7 @@ abstract public class JdbcPortMonitor extends PortMonitor {
 			password
 		);
 		try {
+			conn.setReadOnly(readOnly);
 			try (
 				Statement stmt = conn.createStatement();
 				ResultSet results = stmt.executeQuery(query)

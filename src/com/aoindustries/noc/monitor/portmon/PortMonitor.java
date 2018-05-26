@@ -42,7 +42,12 @@ public abstract class PortMonitor {
 				if(Protocol.MYSQL.equals(appProtocol)) return new MySQLPortMonitor(ipAddress, port, monitoringParameters);
 				if(Protocol.POP3.equals(appProtocol)) return new Pop3PortMonitor(ipAddress, port, monitoringParameters);
 				if(Protocol.SPOP3.equals(appProtocol)) return new SPop3PortMonitor(ipAddress, port, monitoringParameters);
-				if(Protocol.POSTGRESQL.equals(appProtocol) && !ipAddress.isLoopback()) return new PostgresSQLPortMonitor(ipAddress, port, monitoringParameters);
+				if(
+					Protocol.POSTGRESQL.equals(appProtocol)
+					// PostgreSQL performs IDENT-based authentication on loopback,
+					// ncan't monitor with arbitrary usernames/passwords
+					&& !ipAddress.isLoopback()
+				) return new PostgreSQLPortMonitor(ipAddress, port, monitoringParameters);
 				if(Protocol.SMTP.equals(appProtocol) || Protocol.SUBMISSION.equals(appProtocol)) return new SmtpPortMonitor(ipAddress, port, monitoringParameters);
 				if(Protocol.SMTPS.equals(appProtocol)) return new SmtpsPortMonitor(ipAddress, port, monitoringParameters);
 				if(Protocol.SSH.equals(appProtocol)) return new SshPortMonitor(ipAddress, port);
