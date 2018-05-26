@@ -22,6 +22,8 @@ import java.nio.charset.Charset;
 /**
  * Monitors with FTP-specific protocol support.
  *
+ * TODO: Support "AUTH TLS" for FTP monitoring
+ *
  * @author  AO Industries, Inc.
  */
 public class FtpPortMonitor extends DefaultTcpPortMonitor {
