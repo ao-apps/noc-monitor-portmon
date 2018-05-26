@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013, 2016, 2017 by AO Industries, Inc.,
+ * Copyright 2001-2013, 2016, 2017, 2018 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
@@ -9,6 +9,8 @@ import com.aoindustries.aoserv.client.Protocol;
 import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;
+import java.io.IOException;
+import java.io.Reader;
 
 /**
  * A <code>PortMonitor</code> connects to a service on a port and verifies it is
@@ -33,17 +35,40 @@ public abstract class PortMonitor {
 			case TCP:
 				// TCP
 				if(Protocol.FTP.equals(appProtocol)) return new FtpPortMonitor(ipAddress, port, monitoringParameters);
+				// TODO: HTTP(S) protocol support, with application-defined criteria
+				if(Protocol.HTTPS.equals(appProtocol)) return new DefaultSslPortMonitor(ipAddress, port, monitoringParameters);
 				if(Protocol.IMAP2.equals(appProtocol)) return new ImapPortMonitor(ipAddress, port, monitoringParameters);
+				if(Protocol.SIMAP.equals(appProtocol)) return new SImapPortMonitor(ipAddress, port, monitoringParameters);
 				if(Protocol.MYSQL.equals(appProtocol)) return new MySQLPortMonitor(ipAddress, port, monitoringParameters);
 				if(Protocol.POP3.equals(appProtocol)) return new Pop3PortMonitor(ipAddress, port, monitoringParameters);
+				if(Protocol.SPOP3.equals(appProtocol)) return new SPop3PortMonitor(ipAddress, port, monitoringParameters);
 				if(Protocol.POSTGRESQL.equals(appProtocol) && !ipAddress.isLoopback()) return new PostgresSQLPortMonitor(ipAddress, port, monitoringParameters);
 				if(Protocol.SMTP.equals(appProtocol) || Protocol.SUBMISSION.equals(appProtocol)) return new SmtpPortMonitor(ipAddress, port, monitoringParameters);
+				if(Protocol.SMTPS.equals(appProtocol)) return new SmtpsPortMonitor(ipAddress, port, monitoringParameters);
 				if(Protocol.SSH.equals(appProtocol)) return new SshPortMonitor(ipAddress, port);
 				return new DefaultTcpPortMonitor(ipAddress, port);
 			default:
 				throw new IllegalArgumentException("Unable to find port monitor: ipAddress=\""+ipAddress+"\", port="+port+", appProtocol=\""+appProtocol+"\"");
 		}
 	}
+
+	protected static String readLine(Reader in, StringBuilder buffer) throws IOException {
+		buffer.setLength(0);
+		while(true) {
+			int ch = in.read();
+			if(ch == -1) {
+				if(buffer.length() == 0) return null;
+				break;
+			}
+			if(ch == '\n') break;
+			if(ch != '\r') buffer.append((char)ch);
+		}
+		String s = buffer.toString();
+		buffer.setLength(0);
+		return s;
+	}
+
+	protected static final String CRLF = "\r\n";
 
 	protected final InetAddress ipAddress;
 	protected final Port port;

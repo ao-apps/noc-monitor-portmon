@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013, 2016, 2017 by AO Industries, Inc.,
+ * Copyright 2001-2013, 2016, 2017, 2018 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
@@ -13,8 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.net.Socket;
 import java.nio.charset.Charset;
 
 /**
@@ -29,12 +28,9 @@ public class SshPortMonitor extends DefaultTcpPortMonitor {
 	}
 
 	@Override
-	public String checkPort(InputStream socketIn, OutputStream socketOut) throws Exception {
+	public String checkPort(Socket socket, InputStream socketIn, OutputStream socketOut) throws Exception {
 		Charset charset = Charset.forName("US-ASCII");
-		try (
-			PrintWriter out = new PrintWriter(new OutputStreamWriter(socketOut, charset));
-			BufferedReader in = new BufferedReader(new InputStreamReader(socketIn, charset))
-		) {
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(socketIn, charset))) {
 			// Status line
 			String line = in.readLine();
 			if(line==null) throw new EOFException("End of file reading status");
