@@ -88,7 +88,7 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
 					String line = readLine(in, buffer);
 					if(line==null) throw new EOFException("End of file reading capabilities");
 					int bracketPos = line.indexOf(']');
-					final String CAP1 = "* OK [CAPABILITY ";
+					final String CAP1 = "* OK [";
 					if(!line.startsWith(CAP1) || bracketPos==-1) throw new IOException("Unexpected capabilities line: "+line);
 					if(starttls) {
 						// See https://tools.ietf.org/html/rfc2595
@@ -98,8 +98,9 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
 							bracketPos
 						);
 						if(
-							!capability.contains(" STARTTLS ")
+							!capability.startsWith("STARTTLS ")
 							&& !capability.endsWith(" STARTTLS")
+							&& !capability.contains(" STARTTLS ")
 						) {
 							// Logout
 							logout(in, out, buffer);
@@ -127,7 +128,7 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
 					line = readLine(in, buffer);
 					if(line==null) throw new EOFException("End of file reading login response");
 					bracketPos = line.indexOf(']');
-					if(!line.startsWith(TAG_LOGIN + " OK [CAPABILITY ") || bracketPos==-1) throw new IOException("Unexpected line reading login response: "+line);
+					if(!line.startsWith(TAG_LOGIN + " OK [") || bracketPos==-1) throw new IOException("Unexpected line reading login response: "+line);
 					String result = line.substring(bracketPos+1).trim();
 					// Logout
 					logout(in, out, buffer);
