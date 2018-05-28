@@ -21,8 +21,13 @@ public class MySQLPortMonitor extends JdbcPortMonitor {
 
 	public MySQLPortMonitor(InetAddress ipAddress, Port port, HttpParameters monitoringParameters) {
 		super(ipAddress, port, monitoringParameters);
-		// Use SSL unless explicitely disabled with ssl=false
-		ssl = !"false".equalsIgnoreCase(monitoringParameters.getParameter("ssl"));
+		if(ipAddress.isLoopback()) {
+			// Do not use SSL unless explicitely enabled with ssl=true
+			ssl = "true".equalsIgnoreCase(monitoringParameters.getParameter("ssl"));
+		} else {
+			// Use SSL unless explicitely disabled with ssl=false
+			ssl = !"false".equalsIgnoreCase(monitoringParameters.getParameter("ssl"));
+		}
 	}
 
 	@Override
