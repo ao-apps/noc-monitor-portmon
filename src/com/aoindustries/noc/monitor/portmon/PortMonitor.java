@@ -5,7 +5,7 @@
  */
 package com.aoindustries.noc.monitor.portmon;
 
-import com.aoindustries.aoserv.client.Protocol;
+import com.aoindustries.aoserv.client.net.Protocol;
 import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;

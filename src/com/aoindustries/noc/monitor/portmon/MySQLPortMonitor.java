@@ -5,7 +5,7 @@
  */
 package com.aoindustries.noc.monitor.portmon;
 
-import com.aoindustries.aoserv.client.MySQLServer;
+import com.aoindustries.aoserv.client.mysql.MySQLServer;
 import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;

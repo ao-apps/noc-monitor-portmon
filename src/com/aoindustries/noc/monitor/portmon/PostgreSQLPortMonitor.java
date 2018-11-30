@@ -5,8 +5,8 @@
  */
 package com.aoindustries.noc.monitor.portmon;
 
-import com.aoindustries.aoserv.client.PostgresDatabase;
-import com.aoindustries.aoserv.client.PostgresServer;
+import com.aoindustries.aoserv.client.postgresql.PostgresDatabase;
+import com.aoindustries.aoserv.client.postgresql.PostgresServer;
 import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;
