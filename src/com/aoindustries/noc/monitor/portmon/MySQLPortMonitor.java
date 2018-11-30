@@ -5,7 +5,7 @@
  */
 package com.aoindustries.noc.monitor.portmon;
 
-import com.aoindustries.aoserv.client.mysql.MySQLServer;
+import com.aoindustries.aoserv.client.mysql.Server;
 import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;
@@ -45,7 +45,7 @@ public class MySQLPortMonitor extends JdbcPortMonitor {
 		jdbcUrl
 			.append("jdbc:mysql://")
 			.append(ipAddress.toBracketedString());
-		if(port != MySQLServer.DEFAULT_PORT.getPort()) {
+		if(port != Server.DEFAULT_PORT.getPort()) {
 			jdbcUrl.append(':').append(port);
 		}
 		jdbcUrl

@@ -5,7 +5,7 @@
  */
 package com.aoindustries.noc.monitor.portmon;
 
-import com.aoindustries.aoserv.client.net.Protocol;
+import com.aoindustries.aoserv.client.net.AppProtocol;
 import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;
@@ -34,23 +34,23 @@ public abstract class PortMonitor {
 				return new DefaultUdpPortMonitor(ipAddress, port);
 			case TCP:
 				// TCP
-				if(Protocol.FTP.equals(appProtocol)) return new FtpPortMonitor(ipAddress, port, monitoringParameters);
+				if(AppProtocol.FTP.equals(appProtocol)) return new FtpPortMonitor(ipAddress, port, monitoringParameters);
 				// TODO: HTTP(S) protocol support, with application-defined criteria
-				if(Protocol.HTTPS.equals(appProtocol)) return new DefaultSslPortMonitor(ipAddress, port, monitoringParameters);
-				if(Protocol.IMAP2.equals(appProtocol)) return new ImapPortMonitor(ipAddress, port, monitoringParameters);
-				if(Protocol.SIMAP.equals(appProtocol)) return new SImapPortMonitor(ipAddress, port, monitoringParameters);
-				if(Protocol.MYSQL.equals(appProtocol)) return new MySQLPortMonitor(ipAddress, port, monitoringParameters);
-				if(Protocol.POP3.equals(appProtocol)) return new Pop3PortMonitor(ipAddress, port, monitoringParameters);
-				if(Protocol.SPOP3.equals(appProtocol)) return new SPop3PortMonitor(ipAddress, port, monitoringParameters);
+				if(AppProtocol.HTTPS.equals(appProtocol)) return new DefaultSslPortMonitor(ipAddress, port, monitoringParameters);
+				if(AppProtocol.IMAP2.equals(appProtocol)) return new ImapPortMonitor(ipAddress, port, monitoringParameters);
+				if(AppProtocol.SIMAP.equals(appProtocol)) return new SImapPortMonitor(ipAddress, port, monitoringParameters);
+				if(AppProtocol.MYSQL.equals(appProtocol)) return new MySQLPortMonitor(ipAddress, port, monitoringParameters);
+				if(AppProtocol.POP3.equals(appProtocol)) return new Pop3PortMonitor(ipAddress, port, monitoringParameters);
+				if(AppProtocol.SPOP3.equals(appProtocol)) return new SPop3PortMonitor(ipAddress, port, monitoringParameters);
 				if(
-					Protocol.POSTGRESQL.equals(appProtocol)
+					AppProtocol.POSTGRESQL.equals(appProtocol)
 					// PostgreSQL performs IDENT-based authentication on loopback,
 					// ncan't monitor with arbitrary usernames/passwords
 					&& !ipAddress.isLoopback()
 				) return new PostgreSQLPortMonitor(ipAddress, port, monitoringParameters);
-				if(Protocol.SMTP.equals(appProtocol) || Protocol.SUBMISSION.equals(appProtocol)) return new SmtpPortMonitor(ipAddress, port, monitoringParameters);
-				if(Protocol.SMTPS.equals(appProtocol)) return new SmtpsPortMonitor(ipAddress, port, monitoringParameters);
-				if(Protocol.SSH.equals(appProtocol)) return new SshPortMonitor(ipAddress, port);
+				if(AppProtocol.SMTP.equals(appProtocol) || AppProtocol.SUBMISSION.equals(appProtocol)) return new SmtpPortMonitor(ipAddress, port, monitoringParameters);
+				if(AppProtocol.SMTPS.equals(appProtocol)) return new SmtpsPortMonitor(ipAddress, port, monitoringParameters);
+				if(AppProtocol.SSH.equals(appProtocol)) return new SshPortMonitor(ipAddress, port);
 				return new DefaultTcpPortMonitor(ipAddress, port);
 			default:
 				throw new IllegalArgumentException("Unable to find port monitor: ipAddress=\""+ipAddress+"\", port="+port+", appProtocol=\""+appProtocol+"\"");

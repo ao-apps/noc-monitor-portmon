@@ -68,7 +68,7 @@ public class SmtpPortMonitor extends DefaultTcpPortMonitor {
 			if(recipient == null) {
 				throw new IllegalArgumentException("monitoringParameters does not include the recipient parameter");
 			}
-			// Use SSL unless explicitely disabled with ssl=false
+			// Use SSL unless explicitely disabled with starttls=false
 			boolean starttls = !isSsl() && !"false".equalsIgnoreCase(monitoringParameters.getParameter("starttls"));
 			// Optional for authenticated SMTP
 			String username = StringUtility.nullIfEmpty(monitoringParameters.getParameter("username"));
@@ -124,7 +124,7 @@ public class SmtpPortMonitor extends DefaultTcpPortMonitor {
 						if(!ehloResponse.contains("STARTTLS")) {
 							// Quit
 							quit(in, out, buffer);
-							throw new IOException("Server does not support STARTTLS: " + ehloResponse);
+							throw new IOException("Host does not support STARTTLS: " + ehloResponse);
 						}
 						// STARTTLS
 						out.write("STARTTLS" + CRLF);
