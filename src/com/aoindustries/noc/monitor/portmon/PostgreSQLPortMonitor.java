@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2013, 2016, 2017, 2018 by AO Industries, Inc.,
+ * Copyright 2009-2013, 2016, 2017, 2018, 2019 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserve parameterd.
  */
@@ -22,17 +22,26 @@ public class PostgreSQLPortMonitor extends JdbcPortMonitor {
 
 	private static final String APPLICATION_NAME = "noc-monitor";
 
-	private static final String APPLICATION_NAME_URL_ENCODED;
-	static {
+	/**
+	 * See <a href="https://github.com/pgjdbc/pgjdbc/issues/1307">driver 42.2.5 does not recognize cacerts of JRE · Issue #1307 · pgjdbc/pgjdbc</a>.
+	 */
+	private static final String DEFAULT_SSL_FACTORY = "org.postgresql.ssl.DefaultJavaSSLFactory";
+
+	private static String encode(String value) {
 		final String ENCODING = "UTF-8";
+		if(value == null) return null;
 		try {
-			APPLICATION_NAME_URL_ENCODED = URLEncoder.encode(APPLICATION_NAME, ENCODING);
+			return URLEncoder.encode(value, ENCODING);
 		} catch(UnsupportedEncodingException e) {
 			throw new AssertionError("Encoding " + ENCODING + " should always be valid", e);
 		}
 	}
 
+	private static final String APPLICATION_NAME_URL_ENCODED = encode(APPLICATION_NAME);
+
 	private final boolean ssl;
+	private final String sslmode_encoded;
+	private final String sslfactory_encoded;
 
 	public PostgreSQLPortMonitor(InetAddress ipAddress, Port port, HttpParameters monitoringParameters) {
 		super(ipAddress, port, monitoringParameters);
@@ -42,6 +51,15 @@ public class PostgreSQLPortMonitor extends JdbcPortMonitor {
 		} else {
 			// Use SSL unless explicitely disabled with ssl=false
 			ssl = !"false".equalsIgnoreCase(monitoringParameters.getParameter("ssl"));
+		}
+		if(ssl) {
+			sslmode_encoded = encode(monitoringParameters.getParameter("sslmode"));
+			String sslfactory = monitoringParameters.getParameter("sslfactory");
+			if(sslfactory == null) sslfactory = DEFAULT_SSL_FACTORY;
+			sslfactory_encoded = encode(sslfactory);
+		} else {
+			sslmode_encoded = null;
+			sslfactory_encoded = null;
 		}
 	}
 
@@ -71,7 +89,15 @@ public class PostgreSQLPortMonitor extends JdbcPortMonitor {
 			.append("&ApplicationName=").append(APPLICATION_NAME_URL_ENCODED)
 			// Set on each connection: .append("&readOnly=").append(readOnly);
 		;
-		if(ssl) jdbcUrl.append("&ssl=true");
+		if(ssl) {
+			jdbcUrl.append("&ssl=true");
+			if(sslmode_encoded != null && !sslmode_encoded.isEmpty()) {
+				jdbcUrl.append("&sslmode=").append(sslmode_encoded);
+			}
+			if(sslfactory_encoded != null && !sslfactory_encoded.isEmpty()) {
+				jdbcUrl.append("&sslfactory=").append(sslfactory_encoded);
+			}
+		}
 		return jdbcUrl.toString();
 	}
 }
