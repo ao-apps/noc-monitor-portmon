@@ -23,6 +23,15 @@ public class PostgreSQLPortMonitor extends JdbcPortMonitor {
 	private static final String APPLICATION_NAME = "noc-monitor";
 
 	/**
+	 * By default, validate the certificate, but do not verify the hostname.
+	 * This is necessary because we connect by IP address in the JDBC URL.
+	 * <p>
+	 * See <a href="https://jdbc.postgresql.org/documentation/head/connect.html">Connecting to the Database</a>.
+	 * </p>
+	 */
+	private static final String DEFAULT_SSLMODE = "verify-ca";
+
+	/**
 	 * See <a href="https://github.com/pgjdbc/pgjdbc/issues/1307">driver 42.2.5 does not recognize cacerts of JRE · Issue #1307 · pgjdbc/pgjdbc</a>.
 	 */
 	private static final String DEFAULT_SSL_FACTORY = "org.postgresql.ssl.DefaultJavaSSLFactory";
@@ -53,7 +62,10 @@ public class PostgreSQLPortMonitor extends JdbcPortMonitor {
 			ssl = !"false".equalsIgnoreCase(monitoringParameters.getParameter("ssl"));
 		}
 		if(ssl) {
-			sslmode_encoded = encode(monitoringParameters.getParameter("sslmode"));
+			String sslmode = monitoringParameters.getParameter("sslmode");
+			if(sslmode == null) sslmode = DEFAULT_SSLMODE;
+			sslmode_encoded = encode(sslmode);
+
 			String sslfactory = monitoringParameters.getParameter("sslfactory");
 			if(sslfactory == null) sslfactory = DEFAULT_SSL_FACTORY;
 			sslfactory_encoded = encode(sslfactory);
@@ -69,7 +81,7 @@ public class PostgreSQLPortMonitor extends JdbcPortMonitor {
 	}
 
 	/**
-	 * See <a href="https://jdbc.postgresql.org/documentation/94/connect.html">https://jdbc.postgresql.org/documentation/94/connect.html</a>
+	 * See <a href="https://jdbc.postgresql.org/documentation/head/connect.html">Connecting to the Database</a>
 	 */
 	@Override
 	protected String getJdbcUrl(InetAddress ipAddress, int port, String database) {
