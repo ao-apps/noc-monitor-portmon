@@ -7,6 +7,7 @@ package com.aoindustries.noc.monitor.portmon;
 
 import com.aoindustries.aoserv.client.postgresql.Database;
 import com.aoindustries.aoserv.client.postgresql.Server;
+import com.aoindustries.aoserv.client.postgresql.User;
 import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;
@@ -111,5 +112,15 @@ public class PostgreSQLPortMonitor extends JdbcPortMonitor {
 			}
 		}
 		return jdbcUrl.toString();
+	}
+
+	@Override
+	protected String getDefaultUsername() {
+		return User.POSTGRESMON.toString();
+	}
+
+	@Override
+	protected String getDefaultDatabase() {
+		return Database.POSTGRESMON.toString();
 	}
 }

@@ -1,11 +1,13 @@
 /*
- * Copyright 2009-2013, 2016, 2017, 2018 by AO Industries, Inc.,
+ * Copyright 2009-2013, 2016, 2017, 2018, 2019 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserve parameterd.
  */
 package com.aoindustries.noc.monitor.portmon;
 
+import com.aoindustries.aoserv.client.mysql.Database;
 import com.aoindustries.aoserv.client.mysql.Server;
+import com.aoindustries.aoserv.client.mysql.User;
 import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;
@@ -32,6 +34,7 @@ public class MySQLPortMonitor extends JdbcPortMonitor {
 
 	@Override
 	protected String getDriver() {
+		// TODO: com.mysql.cj.jdbc.Driver once using JDBC driver 8.0+
 		return "com.mysql.jdbc.Driver";
 	}
 
@@ -59,5 +62,15 @@ public class MySQLPortMonitor extends JdbcPortMonitor {
 		}
 		jdbcUrl.append("&netTimeoutForStreamingResults=").append(TIMEOUT);
 		return jdbcUrl.toString();
+	}
+
+	@Override
+	protected String getDefaultUsername() {
+		return User.MYSQLMON.toString();
+	}
+
+	@Override
+	protected String getDefaultDatabase() {
+		return Database.MYSQLMON.toString();
 	}
 }

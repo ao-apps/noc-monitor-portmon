@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2013, 2016, 2017, 2018 by AO Industries, Inc.,
+ * Copyright 2009-2013, 2016, 2017, 2018, 2019 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserve parameterd.
  */
@@ -59,13 +59,13 @@ abstract public class JdbcPortMonitor extends PortMonitor {
 	final public String checkPort() throws Exception {
 		// Get the configuration
 		String username = monitoringParameters.getParameter("username");
-		if(username==null || username.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the username parameter");
+		if(username==null || username.length()==0) username = getDefaultUsername();
 		String password = monitoringParameters.getParameter("password");
 		if(password==null || password.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the password parameter");
 		String database = monitoringParameters.getParameter("database");
-		if(database==null || database.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the database parameter");
+		if(database==null || database.length()==0) database = getDefaultDatabase();
 		String query = monitoringParameters.getParameter("query");
-		if(query==null || query.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the query parameter");
+		if(query==null || query.length()==0) query = getDefaultQuery();
 
 		loadDriver(getDriver());
 		conn = DriverManager.getConnection(
@@ -115,4 +115,12 @@ abstract public class JdbcPortMonitor extends PortMonitor {
 	 * Generates the JDBC URL.
 	 */
 	protected abstract String getJdbcUrl(InetAddress ipAddress, int port, String database);
+
+	protected abstract String getDefaultUsername();
+
+	protected abstract String getDefaultDatabase();
+
+	protected String getDefaultQuery() {
+		return "select 1";
+	}
 }
