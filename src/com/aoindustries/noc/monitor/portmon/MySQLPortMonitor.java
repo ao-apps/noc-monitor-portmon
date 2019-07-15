@@ -11,6 +11,8 @@ import com.aoindustries.aoserv.client.mysql.User;
 import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * Monitors a MySQL database.
@@ -18,6 +20,17 @@ import com.aoindustries.net.Port;
  * @author  AO Industries, Inc.
  */
 public class MySQLPortMonitor extends JdbcPortMonitor {
+
+	private static final String ENCODING = "UTF-8";
+
+	private static String encode(String value) {
+		if(value == null) return null;
+		try {
+			return URLEncoder.encode(value, ENCODING);
+		} catch(UnsupportedEncodingException e) {
+			throw new AssertionError("Encoding " + ENCODING + " should always be valid", e);
+		}
+	}
 
 	private final boolean ssl;
 
@@ -52,15 +65,15 @@ public class MySQLPortMonitor extends JdbcPortMonitor {
 			jdbcUrl.append(':').append(port);
 		}
 		jdbcUrl
-			.append('/').append(database)
-			.append("?connectTimeout=").append(TIMEOUT)
-			.append("&socketTimeout=").append(TIMEOUT)
+			.append('/').append(encode(database))
+			.append("?connectTimeout=").append(encode(Integer.toString(TIMEOUT)))
+			.append("&socketTimeout=").append(encode(Integer.toString(TIMEOUT)))
 			.append("&tcpKeepAlive=true")
-			.append("&useSSL=").append(ssl);
+			.append("&useSSL=").append(encode(Boolean.toString(ssl)));
 		if(ssl) {
 			jdbcUrl.append("&requireSSL=true");
 		}
-		jdbcUrl.append("&netTimeoutForStreamingResults=").append(TIMEOUT);
+		jdbcUrl.append("&netTimeoutForStreamingResults=").append(encode(Integer.toString(TIMEOUT)));
 		return jdbcUrl.toString();
 	}
 

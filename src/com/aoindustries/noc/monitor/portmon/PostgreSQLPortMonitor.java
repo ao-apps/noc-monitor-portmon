@@ -21,6 +21,8 @@ import java.net.URLEncoder;
  */
 public class PostgreSQLPortMonitor extends JdbcPortMonitor {
 
+	private static final String ENCODING = "UTF-8";
+
 	private static final String APPLICATION_NAME = "noc-monitor";
 
 	/**
@@ -38,7 +40,6 @@ public class PostgreSQLPortMonitor extends JdbcPortMonitor {
 	private static final String DEFAULT_SSL_FACTORY = "org.postgresql.ssl.DefaultJavaSSLFactory";
 
 	private static String encode(String value) {
-		final String ENCODING = "UTF-8";
 		if(value == null) return null;
 		try {
 			return URLEncoder.encode(value, ENCODING);
@@ -47,11 +48,9 @@ public class PostgreSQLPortMonitor extends JdbcPortMonitor {
 		}
 	}
 
-	private static final String APPLICATION_NAME_URL_ENCODED = encode(APPLICATION_NAME);
-
 	private final boolean ssl;
-	private final String sslmode_encoded;
-	private final String sslfactory_encoded;
+	private final String sslmode;
+	private final String sslfactory;
 
 	public PostgreSQLPortMonitor(InetAddress ipAddress, Port port, HttpParameters monitoringParameters) {
 		super(ipAddress, port, monitoringParameters);
@@ -65,14 +64,14 @@ public class PostgreSQLPortMonitor extends JdbcPortMonitor {
 		if(ssl) {
 			String sslmode = monitoringParameters.getParameter("sslmode");
 			if(sslmode == null) sslmode = DEFAULT_SSLMODE;
-			sslmode_encoded = encode(sslmode);
+			this.sslmode = sslmode;
 
 			String sslfactory = monitoringParameters.getParameter("sslfactory");
 			if(sslfactory == null) sslfactory = DEFAULT_SSL_FACTORY;
-			sslfactory_encoded = encode(sslfactory);
+			this.sslfactory = sslfactory;
 		} else {
-			sslmode_encoded = null;
-			sslfactory_encoded = null;
+			sslmode = null;
+			this.sslfactory = null;
 		}
 	}
 
@@ -94,21 +93,21 @@ public class PostgreSQLPortMonitor extends JdbcPortMonitor {
 			jdbcUrl.append(':').append(port);
 		}
 		jdbcUrl
-			.append('/').append(database)
-			.append("?loginTimeout=").append(TIMEOUT)
-			.append("&connectTimeout=").append(TIMEOUT)
-			.append("&socketTimeout=").append(TIMEOUT)
+			.append('/').append(encode(database))
+			.append("?loginTimeout=").append(encode(Integer.toString(TIMEOUT)))
+			.append("&connectTimeout=").append(encode(Integer.toString(TIMEOUT)))
+			.append("&socketTimeout=").append(encode(Integer.toString(TIMEOUT)))
 			.append("&tcpKeepAlive=true")
-			.append("&ApplicationName=").append(APPLICATION_NAME_URL_ENCODED)
-			// Set on each connection: .append("&readOnly=").append(readOnly);
+			.append("&ApplicationName=").append(encode(APPLICATION_NAME))
+			// Set on each connection: .append("&readOnly=").append(encode(Boolean.toString(readOnly)));
 		;
 		if(ssl) {
 			jdbcUrl.append("&ssl=true");
-			if(sslmode_encoded != null && !sslmode_encoded.isEmpty()) {
-				jdbcUrl.append("&sslmode=").append(sslmode_encoded);
+			if(sslmode != null && !sslmode.isEmpty()) {
+				jdbcUrl.append("&sslmode=").append(encode(sslmode));
 			}
-			if(sslfactory_encoded != null && !sslfactory_encoded.isEmpty()) {
-				jdbcUrl.append("&sslfactory=").append(sslfactory_encoded);
+			if(sslfactory != null && !sslfactory.isEmpty()) {
+				jdbcUrl.append("&sslfactory=").append(encode(sslfactory));
 			}
 		}
 		return jdbcUrl.toString();
