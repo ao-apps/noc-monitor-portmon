@@ -8,11 +8,10 @@ package com.aoindustries.noc.monitor.portmon;
 import com.aoindustries.aoserv.client.mysql.Database;
 import com.aoindustries.aoserv.client.mysql.Server;
 import com.aoindustries.aoserv.client.mysql.User;
-import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import com.aoindustries.net.URIEncoder;
+import com.aoindustries.net.URIParameters;
 
 /**
  * Monitors a MySQL database.
@@ -21,20 +20,9 @@ import java.net.URLEncoder;
  */
 public class MySQLPortMonitor extends JdbcPortMonitor {
 
-	private static final String ENCODING = "UTF-8";
-
-	private static String encode(String value) {
-		if(value == null) return null;
-		try {
-			return URLEncoder.encode(value, ENCODING);
-		} catch(UnsupportedEncodingException e) {
-			throw new AssertionError("Encoding " + ENCODING + " should always be valid", e);
-		}
-	}
-
 	private final boolean ssl;
 
-	public MySQLPortMonitor(InetAddress ipAddress, Port port, HttpParameters monitoringParameters) {
+	public MySQLPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
 		super(ipAddress, port, monitoringParameters);
 		if(ipAddress.isLoopback()) {
 			// Do not use SSL unless explicitely enabled with ssl=true
@@ -64,16 +52,20 @@ public class MySQLPortMonitor extends JdbcPortMonitor {
 		if(port != Server.DEFAULT_PORT.getPort()) {
 			jdbcUrl.append(':').append(port);
 		}
-		jdbcUrl
-			.append('/').append(encode(database))
-			.append("?connectTimeout=").append(encode(Integer.toString(TIMEOUT)))
-			.append("&socketTimeout=").append(encode(Integer.toString(TIMEOUT)))
-			.append("&tcpKeepAlive=true")
-			.append("&useSSL=").append(encode(Boolean.toString(ssl)));
+		jdbcUrl.append('/');
+		URIEncoder.encodeURIComponent(database, jdbcUrl);
+		jdbcUrl.append("?connectTimeout=");
+		URIEncoder.encodeURIComponent(Integer.toString(TIMEOUT), jdbcUrl);
+		jdbcUrl.append("&socketTimeout=");
+		URIEncoder.encodeURIComponent(Integer.toString(TIMEOUT), jdbcUrl);
+		jdbcUrl.append("&tcpKeepAlive=true");
+		jdbcUrl.append("&useSSL=");
+		URIEncoder.encodeURIComponent(Boolean.toString(ssl), jdbcUrl);
 		if(ssl) {
 			jdbcUrl.append("&requireSSL=true");
 		}
-		jdbcUrl.append("&netTimeoutForStreamingResults=").append(encode(Integer.toString(TIMEOUT)));
+		jdbcUrl.append("&netTimeoutForStreamingResults=");
+		URIEncoder.encodeURIComponent(Integer.toString(TIMEOUT), jdbcUrl);
 		return jdbcUrl.toString();
 	}
 

@@ -1,13 +1,13 @@
 /*
- * Copyright 2001-2013, 2016, 2017, 2018 by AO Industries, Inc.,
+ * Copyright 2001-2013, 2016, 2017, 2018, 2019 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
 package com.aoindustries.noc.monitor.portmon;
 
-import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;
+import com.aoindustries.net.URIParameters;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.EOFException;
@@ -28,9 +28,9 @@ import java.nio.charset.Charset;
  */
 public class FtpPortMonitor extends DefaultTcpPortMonitor {
 
-	private final HttpParameters monitoringParameters;
+	private final URIParameters monitoringParameters;
 
-	public FtpPortMonitor(InetAddress ipAddress, Port port, HttpParameters monitoringParameters) {
+	public FtpPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
 		super(ipAddress, port);
 		this.monitoringParameters = monitoringParameters;
 	}

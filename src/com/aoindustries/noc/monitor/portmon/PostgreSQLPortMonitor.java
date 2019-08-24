@@ -8,11 +8,10 @@ package com.aoindustries.noc.monitor.portmon;
 import com.aoindustries.aoserv.client.postgresql.Database;
 import com.aoindustries.aoserv.client.postgresql.Server;
 import com.aoindustries.aoserv.client.postgresql.User;
-import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import com.aoindustries.net.URIEncoder;
+import com.aoindustries.net.URIParameters;
 
 /**
  * Monitors a PostgreSQL database.
@@ -20,8 +19,6 @@ import java.net.URLEncoder;
  * @author  AO Industries, Inc.
  */
 public class PostgreSQLPortMonitor extends JdbcPortMonitor {
-
-	private static final String ENCODING = "UTF-8";
 
 	private static final String APPLICATION_NAME = "noc-monitor";
 
@@ -39,20 +36,11 @@ public class PostgreSQLPortMonitor extends JdbcPortMonitor {
 	 */
 	private static final String DEFAULT_SSL_FACTORY = "org.postgresql.ssl.DefaultJavaSSLFactory";
 
-	private static String encode(String value) {
-		if(value == null) return null;
-		try {
-			return URLEncoder.encode(value, ENCODING);
-		} catch(UnsupportedEncodingException e) {
-			throw new AssertionError("Encoding " + ENCODING + " should always be valid", e);
-		}
-	}
-
 	private final boolean ssl;
 	private final String sslmode;
 	private final String sslfactory;
 
-	public PostgreSQLPortMonitor(InetAddress ipAddress, Port port, HttpParameters monitoringParameters) {
+	public PostgreSQLPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
 		super(ipAddress, port, monitoringParameters);
 		if(ipAddress.isLoopback()) {
 			// Do not use SSL unless explicitely enabled with ssl=true
@@ -62,13 +50,13 @@ public class PostgreSQLPortMonitor extends JdbcPortMonitor {
 			ssl = !"false".equalsIgnoreCase(monitoringParameters.getParameter("ssl"));
 		}
 		if(ssl) {
-			String sslmode = monitoringParameters.getParameter("sslmode");
-			if(sslmode == null) sslmode = DEFAULT_SSLMODE;
-			this.sslmode = sslmode;
+			String _sslmode = monitoringParameters.getParameter("sslmode");
+			if(_sslmode == null) _sslmode = DEFAULT_SSLMODE;
+			this.sslmode = _sslmode;
 
-			String sslfactory = monitoringParameters.getParameter("sslfactory");
-			if(sslfactory == null) sslfactory = DEFAULT_SSL_FACTORY;
-			this.sslfactory = sslfactory;
+			String _sslfactory = monitoringParameters.getParameter("sslfactory");
+			if(_sslfactory == null) _sslfactory = DEFAULT_SSL_FACTORY;
+			this.sslfactory = _sslfactory;
 		} else {
 			sslmode = null;
 			this.sslfactory = null;
@@ -92,22 +80,27 @@ public class PostgreSQLPortMonitor extends JdbcPortMonitor {
 		if(port != Server.DEFAULT_PORT.getPort()) {
 			jdbcUrl.append(':').append(port);
 		}
-		jdbcUrl
-			.append('/').append(encode(database))
-			.append("?loginTimeout=").append(encode(Integer.toString(TIMEOUT)))
-			.append("&connectTimeout=").append(encode(Integer.toString(TIMEOUT)))
-			.append("&socketTimeout=").append(encode(Integer.toString(TIMEOUT)))
-			.append("&tcpKeepAlive=true")
-			.append("&ApplicationName=").append(encode(APPLICATION_NAME))
-			// Set on each connection: .append("&readOnly=").append(encode(Boolean.toString(readOnly)));
-		;
+		jdbcUrl.append('/');
+		URIEncoder.encodeURIComponent(database, jdbcUrl);
+		jdbcUrl.append("?loginTimeout=");
+		URIEncoder.encodeURIComponent(Integer.toString(TIMEOUT), jdbcUrl);
+		jdbcUrl.append("&connectTimeout=");
+		URIEncoder.encodeURIComponent(Integer.toString(TIMEOUT), jdbcUrl);
+		jdbcUrl.append("&socketTimeout=");
+		URIEncoder.encodeURIComponent(Integer.toString(TIMEOUT), jdbcUrl);
+		jdbcUrl.append("&tcpKeepAlive=true");
+		jdbcUrl.append("&ApplicationName=");
+		URIEncoder.encodeURIComponent(APPLICATION_NAME, jdbcUrl);
+		// Set on each connection: .append("&readOnly=").append(encode(Boolean.toString(readOnly)));
 		if(ssl) {
 			jdbcUrl.append("&ssl=true");
 			if(sslmode != null && !sslmode.isEmpty()) {
-				jdbcUrl.append("&sslmode=").append(encode(sslmode));
+				jdbcUrl.append("&sslmode=");
+				URIEncoder.encodeURIComponent(sslmode, jdbcUrl);
 			}
 			if(sslfactory != null && !sslfactory.isEmpty()) {
-				jdbcUrl.append("&sslfactory=").append(encode(sslfactory));
+				jdbcUrl.append("&sslfactory=");
+				URIEncoder.encodeURIComponent(sslfactory, jdbcUrl);
 			}
 		}
 		return jdbcUrl.toString();

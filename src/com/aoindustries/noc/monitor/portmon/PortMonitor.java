@@ -1,14 +1,14 @@
 /*
- * Copyright 2001-2013, 2016, 2017, 2018 by AO Industries, Inc.,
+ * Copyright 2001-2013, 2016, 2017, 2018, 2019 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
 package com.aoindustries.noc.monitor.portmon;
 
 import com.aoindustries.aoserv.client.net.AppProtocol;
-import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;
+import com.aoindustries.net.URIParameters;
 import java.io.IOException;
 import java.io.Reader;
 
@@ -26,7 +26,7 @@ public abstract class PortMonitor {
 	 * Factory method to get the best port monitor for the provided port
 	 * details.  If can't find any monitor, will through IllegalArgumentException.
 	 */
-	public static PortMonitor getPortMonitor(InetAddress ipAddress, Port port, String appProtocol, HttpParameters monitoringParameters) throws IllegalArgumentException {
+	public static PortMonitor getPortMonitor(InetAddress ipAddress, Port port, String appProtocol, URIParameters monitoringParameters) throws IllegalArgumentException {
 		com.aoindustries.net.Protocol netProtocol = port.getProtocol();
 		switch (netProtocol) {
 			case UDP:

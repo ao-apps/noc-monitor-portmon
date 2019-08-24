@@ -1,13 +1,13 @@
 /*
- * Copyright 2001-2013, 2016, 2017, 2018 by AO Industries, Inc.,
+ * Copyright 2001-2013, 2016, 2017, 2018, 2019 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
 package com.aoindustries.noc.monitor.portmon;
 
-import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;
+import com.aoindustries.net.URIParameters;
 import com.aoindustries.util.StringUtility;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -33,9 +33,9 @@ import javax.net.ssl.SSLSocketFactory;
  */
 public class SmtpPortMonitor extends DefaultTcpPortMonitor {
 
-	private final HttpParameters monitoringParameters;
+	private final URIParameters monitoringParameters;
 
-	public SmtpPortMonitor(InetAddress ipAddress, Port port, HttpParameters monitoringParameters) {
+	public SmtpPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
 		super(ipAddress, port);
 		this.monitoringParameters = monitoringParameters;
 	}

@@ -1,13 +1,13 @@
 /*
- * Copyright 2018 by AO Industries, Inc.,
+ * Copyright 2018, 2019 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
 package com.aoindustries.noc.monitor.portmon;
 
-import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;
+import com.aoindustries.net.URIParameters;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -22,7 +22,7 @@ public class SImapPortMonitor extends ImapPortMonitor {
 
 	private final boolean ssl;
 
-	public SImapPortMonitor(InetAddress ipAddress, Port port, HttpParameters monitoringParameters) {
+	public SImapPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
 		super(ipAddress, port, monitoringParameters);
 		// Use SSL unless explicitely disabled with ssl=false
 		ssl = !"false".equalsIgnoreCase(monitoringParameters.getParameter("ssl"));

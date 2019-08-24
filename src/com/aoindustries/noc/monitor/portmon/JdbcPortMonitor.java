@@ -5,9 +5,9 @@
  */
 package com.aoindustries.noc.monitor.portmon;
 
-import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;
+import com.aoindustries.net.URIParameters;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -42,11 +42,11 @@ abstract public class JdbcPortMonitor extends PortMonitor {
 
 	protected static final int TIMEOUT = DefaultTcpPortMonitor.TIMEOUT;
 
-	private final HttpParameters monitoringParameters;
+	private final URIParameters monitoringParameters;
 
 	protected final boolean readOnly;
 
-	public JdbcPortMonitor(InetAddress ipAddress, Port port, HttpParameters monitoringParameters) {
+	public JdbcPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
 		super(ipAddress, port);
 		this.monitoringParameters = monitoringParameters;
 		// Is read-only unless explicitely disabled with readOnly=false

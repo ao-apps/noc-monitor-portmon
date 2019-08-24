@@ -1,13 +1,13 @@
 /*
- * Copyright 2001-2013, 2016, 2017, 2018 by AO Industries, Inc.,
+ * Copyright 2001-2013, 2016, 2017, 2018, 2019 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
 package com.aoindustries.noc.monitor.portmon;
 
-import com.aoindustries.net.HttpParameters;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;
+import com.aoindustries.net.URIParameters;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.EOFException;
@@ -29,9 +29,9 @@ import javax.net.ssl.SSLSocketFactory;
  */
 public class Pop3PortMonitor extends DefaultTcpPortMonitor {
 
-	private final HttpParameters monitoringParameters;
+	private final URIParameters monitoringParameters;
 
-	public Pop3PortMonitor(InetAddress ipAddress, Port port, HttpParameters monitoringParameters) {
+	public Pop3PortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
 		super(ipAddress, port);
 		this.monitoringParameters = monitoringParameters;
 	}
@@ -60,7 +60,7 @@ public class Pop3PortMonitor extends DefaultTcpPortMonitor {
 			if(username==null || username.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the username");
 			String password = monitoringParameters.getParameter("password");
 			if(password==null || password.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the password");
-			// Use SSL unless explicitely disabled with ssl=false
+			// Use SSL unless explicitely disabled with starttls=false
 			boolean starttls = !isSsl() && !"false".equalsIgnoreCase(monitoringParameters.getParameter("starttls"));
 
 			final StringBuilder buffer = new StringBuilder();
