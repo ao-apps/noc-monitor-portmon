@@ -1,14 +1,14 @@
 /*
- * Copyright 2001-2013, 2016, 2017, 2018, 2019 by AO Industries, Inc.,
+ * Copyright 2001-2013, 2016, 2017, 2018, 2019, 2020 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
 package com.aoindustries.noc.monitor.portmon;
 
+import com.aoindustries.lang.Strings;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;
 import com.aoindustries.net.URIParameters;
-import com.aoindustries.util.StringUtility;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.EOFException;
@@ -60,19 +60,19 @@ public class SmtpPortMonitor extends DefaultTcpPortMonitor {
 		Socket sslSocket = null;
 		try {
 			// Get the configuration
-			String from = StringUtility.nullIfEmpty(monitoringParameters.getParameter("from"));
+			String from = Strings.nullIfEmpty(monitoringParameters.getParameter("from"));
 			if(from == null) {
 				throw new IllegalArgumentException("monitoringParameters does not include the from parameter");
 			}
-			String recipient = StringUtility.nullIfEmpty(monitoringParameters.getParameter("recipient"));
+			String recipient = Strings.nullIfEmpty(monitoringParameters.getParameter("recipient"));
 			if(recipient == null) {
 				throw new IllegalArgumentException("monitoringParameters does not include the recipient parameter");
 			}
 			// Use SSL unless explicitely disabled with starttls=false
 			boolean starttls = !isSsl() && !"false".equalsIgnoreCase(monitoringParameters.getParameter("starttls"));
 			// Optional for authenticated SMTP
-			String username = StringUtility.nullIfEmpty(monitoringParameters.getParameter("username"));
-			String password = StringUtility.nullIfEmpty(monitoringParameters.getParameter("password"));
+			String username = Strings.nullIfEmpty(monitoringParameters.getParameter("username"));
+			String password = Strings.nullIfEmpty(monitoringParameters.getParameter("password"));
 			if((username == null) != (password == null)) {
 				throw new IllegalArgumentException("monitoringParameters must include either both username and password or neither");
 			}
