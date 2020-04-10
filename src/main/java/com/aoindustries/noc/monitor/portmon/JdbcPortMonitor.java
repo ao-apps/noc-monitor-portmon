@@ -50,9 +50,9 @@ abstract public class JdbcPortMonitor extends PortMonitor {
 	/**
 	 * Loads a driver at most once.
 	 */
-	private static void loadDriver(String classname) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+	private static void loadDriver(String classname) throws ReflectiveOperationException {
 		if(!driversLoaded.containsKey(classname)) {
-			Object O = Class.forName(classname).newInstance();
+			Object O = Class.forName(classname).getConstructor().newInstance();
 			driversLoaded.putIfAbsent(classname, O);
 		}
 	}
