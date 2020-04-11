@@ -24,9 +24,9 @@
 Port monitoring implementations.
 
 ## Project Links
-* [Project Home](https://aoindustries.com/noc-monitor-portmon/)
-* [Changelog](https://aoindustries.com/noc-monitor-portmon/changelog)
-* [API Docs](https://aoindustries.com/noc-monitor-portmon/apidocs/)
+* [Project Home](https://aoindustries.com/noc/monitor/portmon/)
+* [Changelog](https://aoindustries.com/noc/monitor/portmon/changelog)
+* [API Docs](https://aoindustries.com/noc/monitor/portmon/apidocs/)
 * [Maven Central Repository](https://search.maven.org/artifact/com.aoindustries/noc-monitor-portmon)
 * [GitHub](https://github.com/aoindustries/noc-monitor-portmon)
 
