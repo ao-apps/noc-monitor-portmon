@@ -94,7 +94,7 @@ along with noc-monitor-portmon.  If not, see <http://www.gnu.org/licenses />.
 			<dependency>
 				<groupId>com.aoindustries</groupId><artifactId>aoserv-client</artifactId><version>1.84.2-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
 			</dependency>
-			<!-- Runtime -->
+			<!-- Runtime Direct -->
 			<dependency>
 				<!-- Stay on 5.1.* for <= MySQL 5.1 support -->
 				<groupId>mysql</groupId><artifactId>mysql-connector-java</artifactId><version>5.1.48</version>
@@ -119,7 +119,7 @@ along with noc-monitor-portmon.  If not, see <http://www.gnu.org/licenses />.
 		<dependency>
 			<groupId>com.aoindustries</groupId><artifactId>aoserv-client</artifactId>
 		</dependency>
-		<!-- Runtime -->
+		<!-- Runtime Direct -->
 		<dependency>
 			<groupId>mysql</groupId><artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
