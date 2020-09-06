@@ -25,6 +25,7 @@ package com.aoindustries.noc.monitor.portmon;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;
 import com.aoindustries.net.URIParameters;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -50,7 +51,7 @@ abstract public class JdbcPortMonitor extends PortMonitor {
 	/**
 	 * Loads a driver at most once.
 	 */
-	private static void loadDriver(String classname) throws ReflectiveOperationException {
+	private static void loadDriver(String classname) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 		if(!driversLoaded.containsKey(classname)) {
 			Object O = Class.forName(classname).getConstructor().newInstance();
 			driversLoaded.putIfAbsent(classname, O);
