@@ -61,7 +61,7 @@ public class PostgreSQLPortMonitor extends JdbcPortMonitor {
 		super(ipAddress, port, monitoringParameters);
 		if(ipAddress.isLoopback()) {
 			// Do not use SSL unless explicitely enabled with ssl=true
-			ssl = "true".equalsIgnoreCase(monitoringParameters.getParameter("ssl"));
+			ssl = Boolean.parseBoolean(monitoringParameters.getParameter("ssl"));
 		} else {
 			// Use SSL unless explicitely disabled with ssl=false
 			ssl = !"false".equalsIgnoreCase(monitoringParameters.getParameter("ssl"));
