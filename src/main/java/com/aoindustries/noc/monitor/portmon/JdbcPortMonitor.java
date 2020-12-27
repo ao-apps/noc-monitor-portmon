@@ -25,6 +25,7 @@ package com.aoindustries.noc.monitor.portmon;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;
 import com.aoindustries.net.URIParameters;
+import com.aoindustries.util.ErrorPrinter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -92,9 +93,10 @@ abstract public class JdbcPortMonitor extends PortMonitor {
 		);
 		try {
 			conn.setReadOnly(readOnly);
+			String currentSQL = null;
 			try (
 				Statement stmt = conn.createStatement();
-				ResultSet results = stmt.executeQuery(query)
+				ResultSet results = stmt.executeQuery(currentSQL = query)
 			) {
 				if(!results.next()) throw new SQLException("No row returned");
 				ResultSetMetaData metaData = results.getMetaData();
@@ -104,6 +106,9 @@ abstract public class JdbcPortMonitor extends PortMonitor {
 				String result = results.getString(1);
 				if(results.next()) throw new SQLException("More than one row returned");
 				return result;
+			} catch(Error | RuntimeException | SQLException e) {
+				ErrorPrinter.addSQL(e, currentSQL);
+				throw e;
 			}
 		} finally {
 			conn.close();
