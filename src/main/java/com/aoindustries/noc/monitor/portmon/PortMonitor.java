@@ -1,6 +1,6 @@
 /*
  * noc-monitor-portmon - Port monitoring implementations.
- * Copyright (C) 2001-2013, 2016, 2017, 2018, 2019, 2020  AO Industries, Inc.
+ * Copyright (C) 2001-2013, 2016, 2017, 2018, 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -51,9 +51,15 @@ public abstract class PortMonitor {
 				return new DefaultUdpPortMonitor(ipAddress, port);
 			case TCP:
 				// TCP
-				if(AppProtocol.FTP.equals(appProtocol)) return new FtpPortMonitor(ipAddress, port, monitoringParameters);
 				// TODO: HTTP(S) protocol support, with application-defined criteria
-				if(AppProtocol.HTTPS.equals(appProtocol)) return new DefaultSslPortMonitor(ipAddress, port, monitoringParameters);
+				if(
+					AppProtocol.AOSERV_DAEMON_SSL.equals(appProtocol)
+					|| AppProtocol.AOSERV_MASTER_SSL.equals(appProtocol)
+					|| AppProtocol.HTTPS.equals(appProtocol)
+				) {
+					return new DefaultSslPortMonitor(ipAddress, port, monitoringParameters);
+				}
+				if(AppProtocol.FTP.equals(appProtocol)) return new FtpPortMonitor(ipAddress, port, monitoringParameters);
 				if(AppProtocol.IMAP2.equals(appProtocol)) return new ImapPortMonitor(ipAddress, port, monitoringParameters);
 				if(AppProtocol.SIMAP.equals(appProtocol)) return new SImapPortMonitor(ipAddress, port, monitoringParameters);
 				if(AppProtocol.MYSQL.equals(appProtocol)) return new MySQLPortMonitor(ipAddress, port, monitoringParameters);
@@ -68,7 +74,7 @@ public abstract class PortMonitor {
 				if(AppProtocol.SMTP.equals(appProtocol) || AppProtocol.SUBMISSION.equals(appProtocol)) return new SmtpPortMonitor(ipAddress, port, monitoringParameters);
 				if(AppProtocol.SMTPS.equals(appProtocol)) return new SmtpsPortMonitor(ipAddress, port, monitoringParameters);
 				if(AppProtocol.SSH.equals(appProtocol)) return new SshPortMonitor(ipAddress, port);
-				return new DefaultTcpPortMonitor(ipAddress, port);
+				return new DefaultTcpPortMonitor(ipAddress, port, monitoringParameters);
 			default:
 				throw new IllegalArgumentException("Unable to find port monitor: ipAddress=\""+ipAddress+"\", port="+port+", appProtocol=\""+appProtocol+"\"");
 		}

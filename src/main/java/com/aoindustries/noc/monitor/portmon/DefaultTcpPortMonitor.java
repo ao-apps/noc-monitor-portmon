@@ -1,6 +1,6 @@
 /*
  * noc-monitor-portmon - Port monitoring implementations.
- * Copyright (C) 2001-2013, 2016, 2017, 2018, 2020  AO Industries, Inc.
+ * Copyright (C) 2001-2013, 2016, 2017, 2018, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -26,6 +26,7 @@ import com.aoindustries.io.AOPool;
 import com.aoindustries.net.InetAddress;
 import com.aoindustries.net.Port;
 import com.aoindustries.net.Protocol;
+import com.aoindustries.net.URIParameters;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -33,6 +34,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.net.ssl.SSLSocketFactory;
 
 /**
  * Monitors any TCP port by simply connecting and disconnecting.  Additional
@@ -47,11 +49,23 @@ public class DefaultTcpPortMonitor extends PortMonitor {
 
 	protected static final int TIMEOUT = 60_000;
 
+	protected final boolean ssl;
+
 	private volatile Socket socket;
 
-	public DefaultTcpPortMonitor(InetAddress ipAddress, Port port) {
+	public DefaultTcpPortMonitor(InetAddress ipAddress, Port port, boolean ssl) {
 		super(ipAddress, port);
 		if(port.getProtocol() != Protocol.TCP) throw new IllegalArgumentException("port not TCP: " + port);
+		this.ssl = ssl;
+	}
+
+	public DefaultTcpPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
+		this(
+			ipAddress,
+			port,
+			// Do not use SSL unless explicitely enabled with ssl=true
+			Boolean.parseBoolean(monitoringParameters.getParameter("ssl"))
+		);
 	}
 
 	@Override
@@ -80,6 +94,10 @@ public class DefaultTcpPortMonitor extends PortMonitor {
 			s.setSoTimeout(TIMEOUT);
 			s.connect(new InetSocketAddress(ipAddress.toString(), port.getPort()), TIMEOUT);
 			successful = true;
+			if(ssl) {
+				SSLSocketFactory sslFact = (SSLSocketFactory)SSLSocketFactory.getDefault();
+				s = sslFact.createSocket(s, ipAddress.toString(), port.getPort(), true);
+			}
 			return s;
 		} finally {
 			if(!successful) s.close();
@@ -96,13 +114,19 @@ public class DefaultTcpPortMonitor extends PortMonitor {
 		}
 	}
 
-	protected static final String CONNECTED_SUCCESSFULLY = "Connected successfully";
+	protected static final String
+		CONNECTED_SUCCESSFULLY = "Connected successfully",
+		CONNECTED_SUCCESSFULLY_SSL = CONNECTED_SUCCESSFULLY + " over SSL";
 
 	/**
 	 * Performs any protocol-specific monitoring.  This default implementation does
 	 * nothing.
 	 */
 	protected String checkPort(Socket socket, InputStream in, OutputStream out) throws Exception {
-		return CONNECTED_SUCCESSFULLY;
+		if(ssl) {
+			return CONNECTED_SUCCESSFULLY_SSL;
+		} else {
+			return CONNECTED_SUCCESSFULLY;
+		}
 	}
 }

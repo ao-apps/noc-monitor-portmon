@@ -1,6 +1,6 @@
 /*
  * noc-monitor-portmon - Port monitoring implementations.
- * Copyright (C) 2001-2013, 2016, 2017, 2018, 2019, 2020  AO Industries, Inc.
+ * Copyright (C) 2001-2013, 2016, 2017, 2018, 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -48,7 +48,7 @@ public class FtpPortMonitor extends DefaultTcpPortMonitor {
 	private final URIParameters monitoringParameters;
 
 	public FtpPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
-		super(ipAddress, port);
+		super(ipAddress, port, false);
 		this.monitoringParameters = monitoringParameters;
 	}
 

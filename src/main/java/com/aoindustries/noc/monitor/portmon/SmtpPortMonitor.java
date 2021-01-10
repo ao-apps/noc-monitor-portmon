@@ -1,6 +1,6 @@
 /*
  * noc-monitor-portmon - Port monitoring implementations.
- * Copyright (C) 2001-2013, 2016, 2017, 2018, 2019, 2020  AO Industries, Inc.
+ * Copyright (C) 2001-2013, 2016, 2017, 2018, 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -52,16 +52,14 @@ public class SmtpPortMonitor extends DefaultTcpPortMonitor {
 
 	private final URIParameters monitoringParameters;
 
-	public SmtpPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
-		super(ipAddress, port);
+	public SmtpPortMonitor(InetAddress ipAddress, Port port, boolean ssl, URIParameters monitoringParameters) {
+		super(ipAddress, port, ssl);
 		this.monitoringParameters = monitoringParameters;
 	}
 
-	/**
-	 * Will not try STARTTLS when is SSL.
-	 */
-	protected boolean isSsl() {
-		return false;
+	public SmtpPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
+		super(ipAddress, port, false);
+		this.monitoringParameters = monitoringParameters;
 	}
 
 	private static void quit(Reader in, Writer out, StringBuilder buffer) throws IOException {
@@ -85,8 +83,11 @@ public class SmtpPortMonitor extends DefaultTcpPortMonitor {
 			if(recipient == null) {
 				throw new IllegalArgumentException("monitoringParameters does not include the recipient parameter");
 			}
-			// Use SSL unless explicitely disabled with starttls=false
-			boolean starttls = !isSsl() && !"false".equalsIgnoreCase(monitoringParameters.getParameter("starttls"));
+			boolean starttls =
+				// Will not try STARTTLS when is SSL
+				!ssl
+				// Use SSL unless explicitely disabled with starttls=false
+				&& !"false".equalsIgnoreCase(monitoringParameters.getParameter("starttls"));
 			// Optional for authenticated SMTP
 			String username = Strings.nullIfEmpty(monitoringParameters.getParameter("username"));
 			String password = Strings.nullIfEmpty(monitoringParameters.getParameter("password"));

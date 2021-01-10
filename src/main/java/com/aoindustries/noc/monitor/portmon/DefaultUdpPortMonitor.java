@@ -1,6 +1,6 @@
 /*
  * noc-monitor-portmon - Port monitoring implementations.
- * Copyright (C) 2001-2009, 2016, 2017, 2020  AO Industries, Inc.
+ * Copyright (C) 2001-2009, 2016, 2017, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -57,6 +57,6 @@ public class DefaultUdpPortMonitor extends PortMonitor {
 			// datagramSocket.disconnect();
 			datagramSocket.close();
 		}
-		return "Connected successfully";
+		return DefaultTcpPortMonitor.CONNECTED_SUCCESSFULLY;
 	}
 }

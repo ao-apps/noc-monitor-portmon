@@ -1,6 +1,6 @@
 /*
  * noc-monitor-portmon - Port monitoring implementations.
- * Copyright (C) 2001-2013, 2016, 2017, 2018, 2019, 2020  AO Industries, Inc.
+ * Copyright (C) 2001-2013, 2016, 2017, 2018, 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -48,16 +48,14 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
 
 	private final URIParameters monitoringParameters;
 
-	public ImapPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
-		super(ipAddress, port);
+	public ImapPortMonitor(InetAddress ipAddress, Port port, boolean ssl, URIParameters monitoringParameters) {
+		super(ipAddress, port, ssl);
 		this.monitoringParameters = monitoringParameters;
 	}
 
-	/**
-	 * Will not try STARTTLS when is SSL.
-	 */
-	protected boolean isSsl() {
-		return false;
+	public ImapPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
+		super(ipAddress, port, false);
+		this.monitoringParameters = monitoringParameters;
 	}
 
 	/**
@@ -87,8 +85,11 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
 			if(username==null || username.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the username");
 			String password = monitoringParameters.getParameter("password");
 			if(password==null || password.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the password");
-			// Use SSL unless explicitely disabled with starttls=false
-			boolean starttls = !isSsl() && !"false".equalsIgnoreCase(monitoringParameters.getParameter("starttls"));
+			boolean starttls =
+				// Will not try STARTTLS when is SSL
+				!ssl
+				// Use SSL unless explicitely disabled with starttls=false
+				&& !"false".equalsIgnoreCase(monitoringParameters.getParameter("starttls"));
 
 			final StringBuilder buffer = new StringBuilder();
 			Charset charset = Charset.forName("US-ASCII");

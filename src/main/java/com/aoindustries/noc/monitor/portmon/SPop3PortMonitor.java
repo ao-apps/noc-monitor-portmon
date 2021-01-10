@@ -1,6 +1,6 @@
 /*
  * noc-monitor-portmon - Port monitoring implementations.
- * Copyright (C) 2018, 2019, 2020  AO Industries, Inc.
+ * Copyright (C) 2018, 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -28,7 +28,6 @@ import com.aoindustries.net.URIParameters;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import javax.net.ssl.SSLSocketFactory;
 
 /**
  * Monitors with POP3-specific protocol support over SSL.
@@ -37,36 +36,14 @@ import javax.net.ssl.SSLSocketFactory;
  */
 public class SPop3PortMonitor extends Pop3PortMonitor {
 
-	private final boolean ssl;
-
 	public SPop3PortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
-		super(ipAddress, port, monitoringParameters);
-		// Use SSL unless explicitely disabled with ssl=false
-		ssl = !"false".equalsIgnoreCase(monitoringParameters.getParameter("ssl"));
-	}
-
-	/**
-	 * This port is SSL.
-	 */
-	@Override
-	protected boolean isSsl() {
-		return true;
-	}
-
-	@Override
-	protected Socket connect() throws Exception {
-		boolean successful = false;
-		Socket s = super.connect();
-		try {
-			if(ssl) {
-				SSLSocketFactory sslFact = (SSLSocketFactory)SSLSocketFactory.getDefault();
-				s = sslFact.createSocket(s, ipAddress.toString(), port.getPort(), true);
-			}
-			successful = true;
-			return s;
-		} finally {
-			if(!successful) s.close();
-		}
+		super(
+			ipAddress,
+			port,
+			// Use SSL unless explicitely disabled with ssl=false
+			!"false".equalsIgnoreCase(monitoringParameters.getParameter("ssl")),
+			monitoringParameters
+		);
 	}
 
 	@Override
@@ -74,7 +51,7 @@ public class SPop3PortMonitor extends Pop3PortMonitor {
 		if(ssl) {
 			return super.checkPort(socket, socketIn, socketOut);
 		} else {
-			return CONNECTED_SUCCESSFULLY + " (SSL disabled)";
+			return DefaultSslPortMonitor.CONNECTED_SUCCESSFULLY_SSL_DISABLED;
 		}
 	}
 }
