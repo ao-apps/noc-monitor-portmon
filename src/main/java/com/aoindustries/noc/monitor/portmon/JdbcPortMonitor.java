@@ -1,6 +1,6 @@
 /*
  * noc-monitor-portmon - Port monitoring implementations.
- * Copyright (C) 2009-2013, 2016, 2017, 2018, 2019, 2020  AO Industries, Inc.
+ * Copyright (C) 2009-2013, 2016, 2017, 2018, 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -46,7 +46,7 @@ abstract public class JdbcPortMonitor extends PortMonitor {
 
 	private static final Logger logger = Logger.getLogger(JdbcPortMonitor.class.getName());
 
-	private static final ConcurrentMap<String,Object> driversLoaded = new ConcurrentHashMap<>();
+	private static final ConcurrentMap<String, Object> driversLoaded = new ConcurrentHashMap<>();
 
 	/**
 	 * Loads a driver at most once.
