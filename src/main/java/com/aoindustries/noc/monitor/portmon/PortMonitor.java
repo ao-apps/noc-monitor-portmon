@@ -22,10 +22,10 @@
  */
 package com.aoindustries.noc.monitor.portmon;
 
+import com.aoapps.net.InetAddress;
+import com.aoapps.net.Port;
+import com.aoapps.net.URIParameters;
 import com.aoindustries.aoserv.client.net.AppProtocol;
-import com.aoindustries.net.InetAddress;
-import com.aoindustries.net.Port;
-import com.aoindustries.net.URIParameters;
 import java.io.IOException;
 import java.io.Reader;
 
@@ -44,7 +44,7 @@ public abstract class PortMonitor {
 	 * details.  If can't find any monitor, will through IllegalArgumentException.
 	 */
 	public static PortMonitor getPortMonitor(InetAddress ipAddress, Port port, String appProtocol, URIParameters monitoringParameters) throws IllegalArgumentException {
-		com.aoindustries.net.Protocol netProtocol = port.getProtocol();
+		com.aoapps.net.Protocol netProtocol = port.getProtocol();
 		switch (netProtocol) {
 			case UDP:
 				// UDP

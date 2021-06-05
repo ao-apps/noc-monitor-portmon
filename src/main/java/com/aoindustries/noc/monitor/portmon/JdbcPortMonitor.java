@@ -22,10 +22,10 @@
  */
 package com.aoindustries.noc.monitor.portmon;
 
-import com.aoindustries.net.InetAddress;
-import com.aoindustries.net.Port;
-import com.aoindustries.net.URIParameters;
-import com.aoindustries.util.ErrorPrinter;
+import com.aoapps.lang.util.ErrorPrinter;
+import com.aoapps.net.InetAddress;
+import com.aoapps.net.Port;
+import com.aoapps.net.URIParameters;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;

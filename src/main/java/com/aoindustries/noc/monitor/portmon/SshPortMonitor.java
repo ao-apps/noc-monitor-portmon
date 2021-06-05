@@ -22,8 +22,8 @@
  */
 package com.aoindustries.noc.monitor.portmon;
 
-import com.aoindustries.net.InetAddress;
-import com.aoindustries.net.Port;
+import com.aoapps.net.InetAddress;
+import com.aoapps.net.Port;
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.IOException;

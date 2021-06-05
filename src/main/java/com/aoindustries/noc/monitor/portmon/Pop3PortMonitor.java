@@ -22,9 +22,9 @@
  */
 package com.aoindustries.noc.monitor.portmon;
 
-import com.aoindustries.net.InetAddress;
-import com.aoindustries.net.Port;
-import com.aoindustries.net.URIParameters;
+import com.aoapps.net.InetAddress;
+import com.aoapps.net.Port;
+import com.aoapps.net.URIParameters;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.EOFException;

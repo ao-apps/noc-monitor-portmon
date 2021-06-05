@@ -22,11 +22,11 @@
  */
 package com.aoindustries.noc.monitor.portmon;
 
-import com.aoindustries.io.AOPool;
-import com.aoindustries.net.InetAddress;
-import com.aoindustries.net.Port;
-import com.aoindustries.net.Protocol;
-import com.aoindustries.net.URIParameters;
+import com.aoapps.hodgepodge.io.AOPool;
+import com.aoapps.net.InetAddress;
+import com.aoapps.net.Port;
+import com.aoapps.net.Protocol;
+import com.aoapps.net.URIParameters;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
