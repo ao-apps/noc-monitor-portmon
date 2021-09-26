@@ -109,7 +109,7 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
 					final String CAP1 = "* OK [";
 					if(!line.startsWith(CAP1) || bracketPos==-1) throw new IOException("Unexpected capabilities line: "+line);
 					if(starttls) {
-						// See https://tools.ietf.org/html/rfc2595
+						// See https://datatracker.ietf.org/doc/html/rfc2595
 						final String capability = line.substring(
 							// Include first space of capabilities always
 							CAP1.length() - 1,

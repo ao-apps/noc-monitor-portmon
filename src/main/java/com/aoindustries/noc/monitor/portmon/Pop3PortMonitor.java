@@ -97,7 +97,7 @@ public class Pop3PortMonitor extends DefaultTcpPortMonitor {
 					if(line==null) throw new EOFException("End of file reading status");
 					if(!line.startsWith("+OK ")) throw new IOException("Unexpected status line: "+line);
 					if(starttls) {
-						// See https://tools.ietf.org/html/rfc2595
+						// See https://datatracker.ietf.org/doc/html/rfc2595
 						// TODO: CAPA command first (it would add one round-trip)? https://nmap.org/nsedoc/scripts/pop3-capabilities.html
 						// STLS
 						out.write("STLS" + CRLF);
