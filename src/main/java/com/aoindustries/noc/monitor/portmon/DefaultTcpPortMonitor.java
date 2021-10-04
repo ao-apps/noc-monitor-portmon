@@ -105,7 +105,7 @@ public class DefaultTcpPortMonitor extends PortMonitor {
 	}
 
 	@Override
-	final public String checkPort() throws Exception {
+	public final String checkPort() throws Exception {
 		socket = connect();
 		try {
 			return checkPort(socket, socket.getInputStream(), socket.getOutputStream());

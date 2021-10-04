@@ -42,7 +42,7 @@ import java.util.logging.Logger;
  *
  * @author  AO Industries, Inc.
  */
-abstract public class JdbcPortMonitor extends PortMonitor {
+public abstract class JdbcPortMonitor extends PortMonitor {
 
 	private static final Logger logger = Logger.getLogger(JdbcPortMonitor.class.getName());
 
@@ -74,7 +74,7 @@ abstract public class JdbcPortMonitor extends PortMonitor {
 	private volatile Connection conn;
 
 	@Override
-	final public String checkPort() throws Exception {
+	public final String checkPort() throws Exception {
 		// Get the configuration
 		String username = monitoringParameters.getParameter("username");
 		if(username==null || username.length()==0) username = getDefaultUsername();
