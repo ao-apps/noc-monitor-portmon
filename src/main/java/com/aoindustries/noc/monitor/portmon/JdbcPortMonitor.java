@@ -64,7 +64,7 @@ public abstract class JdbcPortMonitor extends PortMonitor {
 
 	protected final boolean readOnly;
 
-	public JdbcPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
+	protected JdbcPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
 		super(ipAddress, port);
 		this.monitoringParameters = monitoringParameters;
 		// Is read-only unless explicitely disabled with readOnly=false
