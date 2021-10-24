@@ -46,15 +46,15 @@ public abstract class JdbcPortMonitor extends PortMonitor {
 
 	private static final Logger logger = Logger.getLogger(JdbcPortMonitor.class.getName());
 
-	private static final ConcurrentMap<String, Object> driversLoaded = new ConcurrentHashMap<>();
+	private static final ConcurrentMap<String, Class<?>> driversLoaded = new ConcurrentHashMap<>();
 
 	/**
 	 * Loads a driver at most once.
 	 */
 	private static void loadDriver(String classname) throws ClassNotFoundException {
 		if(!driversLoaded.containsKey(classname)) {
-			Object O = Class.forName(classname);
-			driversLoaded.putIfAbsent(classname, O);
+			Class<?> driver = Class.forName(classname);
+			driversLoaded.putIfAbsent(classname, driver);
 		}
 	}
 
@@ -93,6 +93,7 @@ public abstract class JdbcPortMonitor extends PortMonitor {
 		);
 		try {
 			conn.setReadOnly(readOnly);
+			@SuppressWarnings("UnusedAssignment")
 			String currentSQL = null;
 			try (
 				Statement stmt = conn.createStatement();
