@@ -1,6 +1,6 @@
 /*
  * noc-monitor-portmon - Port monitoring implementations.
- * Copyright (C) 2001-2013, 2016, 2017, 2018, 2019, 2020, 2021  AO Industries, Inc.
+ * Copyright (C) 2001-2013, 2016, 2017, 2018, 2019, 2020, 2021, 2022  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -35,6 +35,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Monitors with FTP-specific protocol support.
@@ -60,7 +61,7 @@ public class FtpPortMonitor extends DefaultTcpPortMonitor {
 		String password = monitoringParameters.getParameter("password");
 		if(password==null || password.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the password");
 
-		Charset charset = Charset.forName("US-ASCII");
+		Charset charset = StandardCharsets.US_ASCII;
 		try (
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socketOut, charset));
 			BufferedReader in = new BufferedReader(new InputStreamReader(socketIn, charset))

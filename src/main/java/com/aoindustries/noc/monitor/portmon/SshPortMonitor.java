@@ -1,6 +1,6 @@
 /*
  * noc-monitor-portmon - Port monitoring implementations.
- * Copyright (C) 2001-2013, 2016, 2017, 2018, 2020, 2021  AO Industries, Inc.
+ * Copyright (C) 2001-2013, 2016, 2017, 2018, 2020, 2021, 2022  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -32,6 +32,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Monitors with SSH-specific protocol support.
@@ -46,7 +47,7 @@ public class SshPortMonitor extends DefaultTcpPortMonitor {
 
 	@Override
 	public String checkPort(Socket socket, InputStream socketIn, OutputStream socketOut) throws Exception {
-		Charset charset = Charset.forName("US-ASCII");
+		Charset charset = StandardCharsets.US_ASCII;
 		try (BufferedReader in = new BufferedReader(new InputStreamReader(socketIn, charset))) {
 			// Status line
 			String line = in.readLine();

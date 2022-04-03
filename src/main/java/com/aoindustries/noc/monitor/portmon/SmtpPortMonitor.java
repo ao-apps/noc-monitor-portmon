@@ -1,6 +1,6 @@
 /*
  * noc-monitor-portmon - Port monitoring implementations.
- * Copyright (C) 2001-2013, 2016, 2017, 2018, 2019, 2020, 2021  AO Industries, Inc.
+ * Copyright (C) 2001-2013, 2016, 2017, 2018, 2019, 2020, 2021, 2022  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -38,6 +38,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.Socket;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -103,7 +104,7 @@ public class SmtpPortMonitor extends DefaultTcpPortMonitor {
 			}
 
 			final StringBuilder buffer = new StringBuilder();
-			Charset charset = Charset.forName("US-ASCII");
+			Charset charset = StandardCharsets.US_ASCII;
 			Writer out = new OutputStreamWriter(socketOut, charset);
 			try {
 				Reader in = new InputStreamReader(socketIn, charset);
