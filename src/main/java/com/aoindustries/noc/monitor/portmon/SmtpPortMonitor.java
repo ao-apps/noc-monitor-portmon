@@ -20,6 +20,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with noc-monitor-portmon.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package com.aoindustries.noc.monitor.portmon;
 
 import com.aoapps.lang.Strings;
