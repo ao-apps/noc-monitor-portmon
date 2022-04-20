@@ -47,58 +47,80 @@ import java.nio.charset.StandardCharsets;
  */
 public class FtpPortMonitor extends DefaultTcpPortMonitor {
 
-	private final URIParameters monitoringParameters;
+  private final URIParameters monitoringParameters;
 
-	public FtpPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
-		super(ipAddress, port, false);
-		this.monitoringParameters = monitoringParameters;
-	}
+  public FtpPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
+    super(ipAddress, port, false);
+    this.monitoringParameters = monitoringParameters;
+  }
 
-	@Override
-	public String checkPort(Socket socket, InputStream socketIn, OutputStream socketOut) throws Exception {
-		// Get the configuration
-		String username = monitoringParameters.getParameter("username");
-		if(username==null || username.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the username");
-		String password = monitoringParameters.getParameter("password");
-		if(password==null || password.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the password");
+  @Override
+  public String checkPort(Socket socket, InputStream socketIn, OutputStream socketOut) throws Exception {
+    // Get the configuration
+    String username = monitoringParameters.getParameter("username");
+    if (username == null || username.length() == 0) {
+      throw new IllegalArgumentException("monitoringParameters does not include the username");
+    }
+    String password = monitoringParameters.getParameter("password");
+    if (password == null || password.length() == 0) {
+      throw new IllegalArgumentException("monitoringParameters does not include the password");
+    }
 
-		Charset charset = StandardCharsets.US_ASCII;
-		try (
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socketOut, charset));
-			BufferedReader in = new BufferedReader(new InputStreamReader(socketIn, charset))
-		) {
-			// Status line
-			String line = in.readLine();
-			if(line==null) throw new EOFException("End of file reading status");
-			if(!line.startsWith("220 ")) throw new IOException("Unexpected status line: "+line);
-			// User
-			out.write("user ");
-			out.write(username);
-			out.write(CRLF);
-			out.flush();
-			line = in.readLine();
-			if(line==null) throw new EOFException("End of file reading user response");
-			if(!line.startsWith("331 ")) throw new IOException("Unexpected line reading user response: "+line);
-			// Pass
-			out.write("pass ");
-			out.write(password);
-			out.write(CRLF);
-			out.flush();
-			line = in.readLine();
-			if(line==null) throw new EOFException("End of file reading pass response");
-			if(!line.startsWith("230 ")) throw new IOException("Unexpected line reading pass response: "+line);
-			String result = line.substring(4);
-			// Quit
-			out.write("quit" + CRLF);
-			out.flush();
-			line = in.readLine();
-			if(line==null) throw new EOFException("End of file reading quit response");
-			if(!line.startsWith("221 ")) throw new IOException("Unexpected line reading quit response: "+line);
-			while((line = in.readLine())!=null) {
-				if(!line.startsWith("221 ")) throw new IOException("Unexpected line reading quit response: "+line);
-			}
-			// Return OK result
-			return result;
-		}
-	}
+    Charset charset = StandardCharsets.US_ASCII;
+    try (
+      BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socketOut, charset));
+      BufferedReader in = new BufferedReader(new InputStreamReader(socketIn, charset))
+    ) {
+      // Status line
+      String line = in.readLine();
+      if (line == null) {
+        throw new EOFException("End of file reading status");
+      }
+      if (!line.startsWith("220 ")) {
+        throw new IOException("Unexpected status line: "+line);
+      }
+      // User
+      out.write("user ");
+      out.write(username);
+      out.write(CRLF);
+      out.flush();
+      line = in.readLine();
+      if (line == null) {
+        throw new EOFException("End of file reading user response");
+      }
+      if (!line.startsWith("331 ")) {
+        throw new IOException("Unexpected line reading user response: "+line);
+      }
+      // Pass
+      out.write("pass ");
+      out.write(password);
+      out.write(CRLF);
+      out.flush();
+      line = in.readLine();
+      if (line == null) {
+        throw new EOFException("End of file reading pass response");
+      }
+      if (!line.startsWith("230 ")) {
+        throw new IOException("Unexpected line reading pass response: "+line);
+      }
+      String result = line.substring(4);
+      // Quit
+      out.write("quit" + CRLF);
+      out.flush();
+      line = in.readLine();
+      if (line == null) {
+        throw new EOFException("End of file reading quit response");
+      }
+      if (!line.startsWith("221 ")) {
+        throw new IOException("Unexpected line reading quit response: "+line);
+      }
+      while ((line = in.readLine()) != null) {
+        if (!line.startsWith("221 ")) {
+          throw new IOException("Unexpected line reading quit response: "+line);
+        }
+      }
+      // Return OK result
+      return result;
+    }
+  }
 }

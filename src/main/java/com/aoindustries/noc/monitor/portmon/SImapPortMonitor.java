@@ -37,22 +37,22 @@ import java.net.Socket;
  */
 public class SImapPortMonitor extends ImapPortMonitor {
 
-	public SImapPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
-		super(
-			ipAddress,
-			port,
-			// Use SSL unless explicitely disabled with ssl=false
-			!"false".equalsIgnoreCase(monitoringParameters.getParameter("ssl")),
-			monitoringParameters
-		);
-	}
+  public SImapPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
+    super(
+      ipAddress,
+      port,
+      // Use SSL unless explicitely disabled with ssl=false
+      !"false".equalsIgnoreCase(monitoringParameters.getParameter("ssl")),
+      monitoringParameters
+    );
+  }
 
-	@Override
-	public String checkPort(Socket socket, InputStream socketIn, OutputStream socketOut) throws Exception {
-		if(ssl) {
-			return super.checkPort(socket, socketIn, socketOut);
-		} else {
-			return DefaultSslPortMonitor.CONNECTED_SUCCESSFULLY_SSL_DISABLED;
-		}
-	}
+  @Override
+  public String checkPort(Socket socket, InputStream socketIn, OutputStream socketOut) throws Exception {
+    if (ssl) {
+      return super.checkPort(socket, socketIn, socketOut);
+    } else {
+      return DefaultSslPortMonitor.CONNECTED_SUCCESSFULLY_SSL_DISABLED;
+    }
+  }
 }

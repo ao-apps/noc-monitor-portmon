@@ -46,88 +46,92 @@ import javax.net.ssl.SSLSocketFactory;
  */
 public class DefaultTcpPortMonitor extends PortMonitor {
 
-	private static final Logger logger = Logger.getLogger(DefaultTcpPortMonitor.class.getName());
+  private static final Logger logger = Logger.getLogger(DefaultTcpPortMonitor.class.getName());
 
-	protected static final int TIMEOUT = 60_000;
+  protected static final int TIMEOUT = 60_000;
 
-	protected final boolean ssl;
+  protected final boolean ssl;
 
-	private volatile Socket socket;
+  private volatile Socket socket;
 
-	public DefaultTcpPortMonitor(InetAddress ipAddress, Port port, boolean ssl) {
-		super(ipAddress, port);
-		if(port.getProtocol() != Protocol.TCP) throw new IllegalArgumentException("port not TCP: " + port);
-		this.ssl = ssl;
-	}
+  public DefaultTcpPortMonitor(InetAddress ipAddress, Port port, boolean ssl) {
+    super(ipAddress, port);
+    if (port.getProtocol() != Protocol.TCP) {
+      throw new IllegalArgumentException("port not TCP: " + port);
+    }
+    this.ssl = ssl;
+  }
 
-	public DefaultTcpPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
-		this(
-			ipAddress,
-			port,
-			// Do not use SSL unless explicitely enabled with ssl=true
-			Boolean.parseBoolean(monitoringParameters.getParameter("ssl"))
-		);
-	}
+  public DefaultTcpPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
+    this(
+      ipAddress,
+      port,
+      // Do not use SSL unless explicitely enabled with ssl=true
+      Boolean.parseBoolean(monitoringParameters.getParameter("ssl"))
+    );
+  }
 
-	@Override
-	public void cancel() {
-		super.cancel();
-		Socket mySocket = socket;
-		if(mySocket!=null) {
-			try {
-				mySocket.close();
-			} catch(IOException err) {
-				logger.log(Level.WARNING, null, err);
-			}
-		}
-	}
+  @Override
+  public void cancel() {
+    super.cancel();
+    Socket mySocket = socket;
+    if (mySocket != null) {
+      try {
+        mySocket.close();
+      } catch (IOException err) {
+        logger.log(Level.WARNING, null, err);
+      }
+    }
+  }
 
-	/**
-	 * Gets the socket to use for this port connection.
-	 */
-	protected Socket connect() throws Exception {
-		boolean successful = false;
-		Socket s = new Socket();
-		try {
-			s.setKeepAlive(true);
-			s.setSoLinger(true, AOPool.DEFAULT_SOCKET_SO_LINGER);
-			//s.setTcpNoDelay(true);
-			s.setSoTimeout(TIMEOUT);
-			s.connect(new InetSocketAddress(ipAddress.toString(), port.getPort()), TIMEOUT);
-			successful = true;
-			if(ssl) {
-				SSLSocketFactory sslFact = (SSLSocketFactory)SSLSocketFactory.getDefault();
-				s = sslFact.createSocket(s, ipAddress.toString(), port.getPort(), true);
-			}
-			return s;
-		} finally {
-			if(!successful) s.close();
-		}
-	}
+  /**
+   * Gets the socket to use for this port connection.
+   */
+  protected Socket connect() throws Exception {
+    boolean successful = false;
+    Socket s = new Socket();
+    try {
+      s.setKeepAlive(true);
+      s.setSoLinger(true, AOPool.DEFAULT_SOCKET_SO_LINGER);
+      //s.setTcpNoDelay(true);
+      s.setSoTimeout(TIMEOUT);
+      s.connect(new InetSocketAddress(ipAddress.toString(), port.getPort()), TIMEOUT);
+      successful = true;
+      if (ssl) {
+        SSLSocketFactory sslFact = (SSLSocketFactory)SSLSocketFactory.getDefault();
+        s = sslFact.createSocket(s, ipAddress.toString(), port.getPort(), true);
+      }
+      return s;
+    } finally {
+      if (!successful) {
+        s.close();
+      }
+    }
+  }
 
-	@Override
-	public final String checkPort() throws Exception {
-		socket = connect();
-		try {
-			return checkPort(socket, socket.getInputStream(), socket.getOutputStream());
-		} finally {
-			socket.close();
-		}
-	}
+  @Override
+  public final String checkPort() throws Exception {
+    socket = connect();
+    try {
+      return checkPort(socket, socket.getInputStream(), socket.getOutputStream());
+    } finally {
+      socket.close();
+    }
+  }
 
-	protected static final String
-		CONNECTED_SUCCESSFULLY = "Connected successfully",
-		CONNECTED_SUCCESSFULLY_SSL = CONNECTED_SUCCESSFULLY + " over SSL";
+  protected static final String
+    CONNECTED_SUCCESSFULLY = "Connected successfully",
+    CONNECTED_SUCCESSFULLY_SSL = CONNECTED_SUCCESSFULLY + " over SSL";
 
-	/**
-	 * Performs any protocol-specific monitoring.  This default implementation does
-	 * nothing.
-	 */
-	protected String checkPort(Socket socket, InputStream in, OutputStream out) throws Exception {
-		if(ssl) {
-			return CONNECTED_SUCCESSFULLY_SSL;
-		} else {
-			return CONNECTED_SUCCESSFULLY;
-		}
-	}
+  /**
+   * Performs any protocol-specific monitoring.  This default implementation does
+   * nothing.
+   */
+  protected String checkPort(Socket socket, InputStream in, OutputStream out) throws Exception {
+    if (ssl) {
+      return CONNECTED_SUCCESSFULLY_SSL;
+    } else {
+      return CONNECTED_SUCCESSFULLY;
+    }
+  }
 }

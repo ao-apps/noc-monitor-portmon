@@ -45,106 +45,122 @@ import java.util.logging.Logger;
  */
 public abstract class JdbcPortMonitor extends PortMonitor {
 
-	private static final Logger logger = Logger.getLogger(JdbcPortMonitor.class.getName());
+  private static final Logger logger = Logger.getLogger(JdbcPortMonitor.class.getName());
 
-	private static final ConcurrentMap<String, Class<?>> driversLoaded = new ConcurrentHashMap<>();
+  private static final ConcurrentMap<String, Class<?>> driversLoaded = new ConcurrentHashMap<>();
 
-	/**
-	 * Loads a driver at most once.
-	 */
-	private static void loadDriver(String classname) throws ClassNotFoundException {
-		if(!driversLoaded.containsKey(classname)) {
-			Class<?> driver = Class.forName(classname);
-			driversLoaded.putIfAbsent(classname, driver);
-		}
-	}
+  /**
+   * Loads a driver at most once.
+   */
+  private static void loadDriver(String classname) throws ClassNotFoundException {
+    if (!driversLoaded.containsKey(classname)) {
+      Class<?> driver = Class.forName(classname);
+      driversLoaded.putIfAbsent(classname, driver);
+    }
+  }
 
-	protected static final int TIMEOUT = DefaultTcpPortMonitor.TIMEOUT;
+  protected static final int TIMEOUT = DefaultTcpPortMonitor.TIMEOUT;
 
-	private final URIParameters monitoringParameters;
+  private final URIParameters monitoringParameters;
 
-	protected final boolean readOnly;
+  protected final boolean readOnly;
 
-	protected JdbcPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
-		super(ipAddress, port);
-		this.monitoringParameters = monitoringParameters;
-		// Is read-only unless explicitely disabled with readOnly=false
-		readOnly = !"false".equalsIgnoreCase(monitoringParameters.getParameter("readOnly"));
-	}
+  protected JdbcPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
+    super(ipAddress, port);
+    this.monitoringParameters = monitoringParameters;
+    // Is read-only unless explicitely disabled with readOnly=false
+    readOnly = !"false".equalsIgnoreCase(monitoringParameters.getParameter("readOnly"));
+  }
 
-	private volatile Connection conn;
+  private volatile Connection conn;
 
-	@Override
-	public final String checkPort() throws Exception {
-		// Get the configuration
-		String username = monitoringParameters.getParameter("username");
-		if(username==null || username.length()==0) username = getDefaultUsername();
-		String password = monitoringParameters.getParameter("password");
-		if(password==null || password.length()==0) throw new IllegalArgumentException("monitoringParameters does not include the password parameter");
-		String database = monitoringParameters.getParameter("database");
-		if(database==null || database.length()==0) database = getDefaultDatabase();
-		String query = monitoringParameters.getParameter("query");
-		if(query==null || query.length()==0) query = getDefaultQuery();
+  @Override
+  public final String checkPort() throws Exception {
+    // Get the configuration
+    String username = monitoringParameters.getParameter("username");
+    if (username == null || username.length() == 0) {
+      username = getDefaultUsername();
+    }
+    String password = monitoringParameters.getParameter("password");
+    if (password == null || password.length() == 0) {
+      throw new IllegalArgumentException("monitoringParameters does not include the password parameter");
+    }
+    String database = monitoringParameters.getParameter("database");
+    if (database == null || database.length() == 0) {
+      database = getDefaultDatabase();
+    }
+    String query = monitoringParameters.getParameter("query");
+    if (query == null || query.length() == 0) {
+      query = getDefaultQuery();
+    }
 
-		loadDriver(getDriver());
-		conn = DriverManager.getConnection(
-			getJdbcUrl(ipAddress, port.getPort(), database),
-			username,
-			password
-		);
-		try {
-			conn.setReadOnly(readOnly);
-			@SuppressWarnings("UnusedAssignment")
-			String currentSQL = null;
-			try (
-				Statement stmt = conn.createStatement();
-				ResultSet results = stmt.executeQuery(currentSQL = query)
-			) {
-				if(!results.next()) throw new SQLException("No row returned");
-				ResultSetMetaData metaData = results.getMetaData();
-				int colCount = metaData.getColumnCount();
-				if(colCount==0) throw new SQLException("No columns returned");
-				if(colCount>1) throw new SQLException("More than one column returned");
-				String result = results.getString(1);
-				if(results.next()) throw new SQLException("More than one row returned");
-				return result;
-			} catch(Error | RuntimeException | SQLException e) {
-				ErrorPrinter.addSQL(e, currentSQL);
-				throw e;
-			}
-		} finally {
-			conn.close();
-		}
-	}
+    loadDriver(getDriver());
+    conn = DriverManager.getConnection(
+      getJdbcUrl(ipAddress, port.getPort(), database),
+      username,
+      password
+    );
+    try {
+      conn.setReadOnly(readOnly);
+      @SuppressWarnings("UnusedAssignment")
+      String currentSQL = null;
+      try (
+        Statement stmt = conn.createStatement();
+        ResultSet results = stmt.executeQuery(currentSQL = query)
+      ) {
+        if (!results.next()) {
+          throw new SQLException("No row returned");
+        }
+        ResultSetMetaData metaData = results.getMetaData();
+        int colCount = metaData.getColumnCount();
+        if (colCount == 0) {
+          throw new SQLException("No columns returned");
+        }
+        if (colCount>1) {
+          throw new SQLException("More than one column returned");
+        }
+        String result = results.getString(1);
+        if (results.next()) {
+          throw new SQLException("More than one row returned");
+        }
+        return result;
+      } catch (Error | RuntimeException | SQLException e) {
+        ErrorPrinter.addSQL(e, currentSQL);
+        throw e;
+      }
+    } finally {
+      conn.close();
+    }
+  }
 
-	@Override
-	public void cancel() {
-		super.cancel();
-		Connection myConn = conn;
-		if(myConn!=null) {
-			try {
-				myConn.close();
-			} catch(SQLException err) {
-				logger.log(Level.WARNING, null, err);
-			}
-		}
-	}
+  @Override
+  public void cancel() {
+    super.cancel();
+    Connection myConn = conn;
+    if (myConn != null) {
+      try {
+        myConn.close();
+      } catch (SQLException err) {
+        logger.log(Level.WARNING, null, err);
+      }
+    }
+  }
 
-	/**
-	 * Gets the driver classname.
-	 */
-	protected abstract String getDriver();
+  /**
+   * Gets the driver classname.
+   */
+  protected abstract String getDriver();
 
-	/**
-	 * Generates the JDBC URL.
-	 */
-	protected abstract String getJdbcUrl(InetAddress ipAddress, int port, String database);
+  /**
+   * Generates the JDBC URL.
+   */
+  protected abstract String getJdbcUrl(InetAddress ipAddress, int port, String database);
 
-	protected abstract String getDefaultUsername();
+  protected abstract String getDefaultUsername();
 
-	protected abstract String getDefaultDatabase();
+  protected abstract String getDefaultDatabase();
 
-	protected String getDefaultQuery() {
-		return "select 1";
-	}
+  protected String getDefaultQuery() {
+    return "select 1";
+  }
 }

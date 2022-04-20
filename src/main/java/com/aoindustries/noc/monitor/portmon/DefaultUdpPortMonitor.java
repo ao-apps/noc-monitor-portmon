@@ -35,29 +35,33 @@ import java.net.InetAddress;
  */
 public class DefaultUdpPortMonitor extends PortMonitor {
 
-	private volatile DatagramSocket datagramSocket;
+  private volatile DatagramSocket datagramSocket;
 
-	public DefaultUdpPortMonitor(com.aoapps.net.InetAddress ipAddress, Port port) {
-		super(ipAddress, port);
-		if(port.getProtocol() != Protocol.UDP) throw new IllegalArgumentException("port not UDP: " + port);
-	}
+  public DefaultUdpPortMonitor(com.aoapps.net.InetAddress ipAddress, Port port) {
+    super(ipAddress, port);
+    if (port.getProtocol() != Protocol.UDP) {
+      throw new IllegalArgumentException("port not UDP: " + port);
+    }
+  }
 
-	@Override
-	public void cancel() {
-		super.cancel();
-		DatagramSocket myDatagramSocket = datagramSocket;
-		if(myDatagramSocket!=null) myDatagramSocket.close();
-	}
+  @Override
+  public void cancel() {
+    super.cancel();
+    DatagramSocket myDatagramSocket = datagramSocket;
+    if (myDatagramSocket != null) {
+      myDatagramSocket.close();
+    }
+  }
 
-	@Override
-	public String checkPort() throws Exception {
-		datagramSocket=new DatagramSocket();
-		try {
-			datagramSocket.connect(InetAddress.getByName(ipAddress.toString()), port.getPort());
-		} finally {
-			// datagramSocket.disconnect();
-			datagramSocket.close();
-		}
-		return DefaultTcpPortMonitor.CONNECTED_SUCCESSFULLY;
-	}
+  @Override
+  public String checkPort() throws Exception {
+    datagramSocket=new DatagramSocket();
+    try {
+      datagramSocket.connect(InetAddress.getByName(ipAddress.toString()), port.getPort());
+    } finally {
+      // datagramSocket.disconnect();
+      datagramSocket.close();
+    }
+    return DefaultTcpPortMonitor.CONNECTED_SUCCESSFULLY;
+  }
 }

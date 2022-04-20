@@ -42,20 +42,24 @@ import java.nio.charset.StandardCharsets;
  */
 public class SshPortMonitor extends DefaultTcpPortMonitor {
 
-	public SshPortMonitor(InetAddress ipAddress, Port port) {
-		super(ipAddress, port, false);
-	}
+  public SshPortMonitor(InetAddress ipAddress, Port port) {
+    super(ipAddress, port, false);
+  }
 
-	@Override
-	public String checkPort(Socket socket, InputStream socketIn, OutputStream socketOut) throws Exception {
-		Charset charset = StandardCharsets.US_ASCII;
-		try (BufferedReader in = new BufferedReader(new InputStreamReader(socketIn, charset))) {
-			// Status line
-			String line = in.readLine();
-			if(line==null) throw new EOFException("End of file reading status");
-			if(!line.startsWith("SSH-")) throw new IOException("Unexpected status line: "+line);
-			// Return OK result
-			return line;
-		}
-	}
+  @Override
+  public String checkPort(Socket socket, InputStream socketIn, OutputStream socketOut) throws Exception {
+    Charset charset = StandardCharsets.US_ASCII;
+    try (BufferedReader in = new BufferedReader(new InputStreamReader(socketIn, charset))) {
+      // Status line
+      String line = in.readLine();
+      if (line == null) {
+        throw new EOFException("End of file reading status");
+      }
+      if (!line.startsWith("SSH-")) {
+        throw new IOException("Unexpected status line: "+line);
+      }
+      // Return OK result
+      return line;
+    }
+  }
 }

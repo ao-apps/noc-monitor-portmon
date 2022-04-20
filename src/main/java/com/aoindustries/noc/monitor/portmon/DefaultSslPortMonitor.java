@@ -37,23 +37,23 @@ import java.net.Socket;
  */
 public class DefaultSslPortMonitor extends DefaultTcpPortMonitor {
 
-	public DefaultSslPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
-		super(
-			ipAddress,
-			port,
-			// Use SSL unless explicitely disabled with ssl=false
-			!"false".equalsIgnoreCase(monitoringParameters.getParameter("ssl"))
-		);
-	}
+  public DefaultSslPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
+    super(
+      ipAddress,
+      port,
+      // Use SSL unless explicitely disabled with ssl=false
+      !"false".equalsIgnoreCase(monitoringParameters.getParameter("ssl"))
+    );
+  }
 
-	protected static final String CONNECTED_SUCCESSFULLY_SSL_DISABLED = CONNECTED_SUCCESSFULLY + " (SSL disabled)";
+  protected static final String CONNECTED_SUCCESSFULLY_SSL_DISABLED = CONNECTED_SUCCESSFULLY + " (SSL disabled)";
 
-	@Override
-	public String checkPort(Socket socket, InputStream socketIn, OutputStream socketOut) throws Exception {
-		if(ssl) {
-			return CONNECTED_SUCCESSFULLY_SSL;
-		} else {
-			return CONNECTED_SUCCESSFULLY_SSL_DISABLED;
-		}
-	}
+  @Override
+  public String checkPort(Socket socket, InputStream socketIn, OutputStream socketOut) throws Exception {
+    if (ssl) {
+      return CONNECTED_SUCCESSFULLY_SSL;
+    } else {
+      return CONNECTED_SUCCESSFULLY_SSL_DISABLED;
+    }
+  }
 }
