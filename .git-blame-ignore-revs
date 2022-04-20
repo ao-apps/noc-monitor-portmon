@@ -1,2 +1,6 @@
 # Significant manual code formatting clean-up…
 c4ef60f280d0c7d0808f5e9724845bb95280592b
+# Generics whitespace consistency
+32a30505bbaab0bbd625e0c245585840216ca0f8
+# Added missing space after tag.
+# 921ae3f090a64263265515e39270590416ad26e8
