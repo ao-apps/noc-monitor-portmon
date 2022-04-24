@@ -90,10 +90,10 @@ public class SmtpPortMonitor extends DefaultTcpPortMonitor {
         throw new IllegalArgumentException("monitoringParameters does not include the recipient parameter");
       }
       boolean starttls =
-        // Will not try STARTTLS when is SSL
-        !ssl
-        // Use SSL unless explicitely disabled with starttls=false
-        && !"false".equalsIgnoreCase(monitoringParameters.getParameter("starttls"));
+          // Will not try STARTTLS when is SSL
+          !ssl
+              // Use SSL unless explicitely disabled with starttls=false
+              && !"false".equalsIgnoreCase(monitoringParameters.getParameter("starttls"));
       // Optional for authenticated SMTP
       String username = Strings.nullIfEmpty(monitoringParameters.getParameter("username"));
       String password = Strings.nullIfEmpty(monitoringParameters.getParameter("password"));
@@ -167,7 +167,7 @@ public class SmtpPortMonitor extends DefaultTcpPortMonitor {
               throw new IOException("Unexpected line reading STARTTLS response: " + line);
             }
             // Wrap in SSL
-            SSLSocketFactory sslFact = (SSLSocketFactory)SSLSocketFactory.getDefault();
+            SSLSocketFactory sslFact = (SSLSocketFactory) SSLSocketFactory.getDefault();
             sslSocket = sslFact.createSocket(socket, ipAddress.toString(), port.getPort(), false);
             out = new BufferedWriter(new OutputStreamWriter(sslSocket.getOutputStream(), charset));
             in = new BufferedReader(new InputStreamReader(sslSocket.getInputStream(), charset));
@@ -187,8 +187,8 @@ public class SmtpPortMonitor extends DefaultTcpPortMonitor {
               throw new EOFException("End of file reading AUTH PLAIN response");
             }
             if (
-              !line.startsWith("235 2.0.0 ")
-              && !line.startsWith("235 2.7.0 ")
+                !line.startsWith("235 2.0.0 ")
+                    && !line.startsWith("235 2.7.0 ")
             ) {
               throw new IOException("Unexpected line reading AUTH PLAIN response: " + line);
             }

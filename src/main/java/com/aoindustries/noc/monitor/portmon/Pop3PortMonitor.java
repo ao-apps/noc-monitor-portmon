@@ -68,7 +68,7 @@ public class Pop3PortMonitor extends DefaultTcpPortMonitor {
       throw new EOFException("End of file reading QUIT response");
     }
     if (!line.startsWith("+OK")) {
-      throw new IOException("Unexpected line reading QUIT response: "+line);
+      throw new IOException("Unexpected line reading QUIT response: " + line);
     }
   }
 
@@ -86,10 +86,10 @@ public class Pop3PortMonitor extends DefaultTcpPortMonitor {
         throw new IllegalArgumentException("monitoringParameters does not include the password");
       }
       boolean starttls =
-        // Will not try STARTTLS when is SSL
-        !ssl
-        // Use SSL unless explicitely disabled with starttls=false
-        && !"false".equalsIgnoreCase(monitoringParameters.getParameter("starttls"));
+          // Will not try STARTTLS when is SSL
+          !ssl
+              // Use SSL unless explicitely disabled with starttls=false
+              && !"false".equalsIgnoreCase(monitoringParameters.getParameter("starttls"));
 
       final StringBuilder buffer = new StringBuilder();
       Charset charset = StandardCharsets.US_ASCII;
@@ -108,7 +108,7 @@ public class Pop3PortMonitor extends DefaultTcpPortMonitor {
             throw new EOFException("End of file reading status");
           }
           if (!line.startsWith("+OK ")) {
-            throw new IOException("Unexpected status line: "+line);
+            throw new IOException("Unexpected status line: " + line);
           }
           if (starttls) {
             // See https://datatracker.ietf.org/doc/html/rfc2595
@@ -123,10 +123,10 @@ public class Pop3PortMonitor extends DefaultTcpPortMonitor {
             if (!line.startsWith("+OK ")) {
               // Quit
               quit(in, out, buffer);
-              throw new IOException("Unexpected line reading STLS response: "+line);
+              throw new IOException("Unexpected line reading STLS response: " + line);
             }
             // Wrap in SSL
-            SSLSocketFactory sslFact = (SSLSocketFactory)SSLSocketFactory.getDefault();
+            SSLSocketFactory sslFact = (SSLSocketFactory) SSLSocketFactory.getDefault();
             sslSocket = sslFact.createSocket(socket, ipAddress.toString(), port.getPort(), false);
             out = new BufferedWriter(new OutputStreamWriter(sslSocket.getOutputStream(), charset));
             in = new BufferedReader(new InputStreamReader(sslSocket.getInputStream(), charset));
@@ -141,7 +141,7 @@ public class Pop3PortMonitor extends DefaultTcpPortMonitor {
             throw new EOFException("End of file reading USER response");
           }
           if (!line.startsWith("+OK ")) {
-            throw new IOException("Unexpected line reading USER response: "+line);
+            throw new IOException("Unexpected line reading USER response: " + line);
           }
           // PASS
           out.write("PASS ");
@@ -160,7 +160,7 @@ public class Pop3PortMonitor extends DefaultTcpPortMonitor {
             // Locked, but otherwise OK
             result = line.substring(5);
           } else {
-            throw new IOException("Unexpected line reading PASS response: "+line);
+            throw new IOException("Unexpected line reading PASS response: " + line);
           }
           // Quit
           quit(in, out, buffer);

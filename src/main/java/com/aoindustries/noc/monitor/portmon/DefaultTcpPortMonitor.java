@@ -64,10 +64,10 @@ public class DefaultTcpPortMonitor extends PortMonitor {
 
   public DefaultTcpPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
     this(
-      ipAddress,
-      port,
-      // Do not use SSL unless explicitely enabled with ssl=true
-      Boolean.parseBoolean(monitoringParameters.getParameter("ssl"))
+        ipAddress,
+        port,
+        // Do not use SSL unless explicitely enabled with ssl=true
+        Boolean.parseBoolean(monitoringParameters.getParameter("ssl"))
     );
   }
 
@@ -98,7 +98,7 @@ public class DefaultTcpPortMonitor extends PortMonitor {
       s.connect(new InetSocketAddress(ipAddress.toString(), port.getPort()), TIMEOUT);
       successful = true;
       if (ssl) {
-        SSLSocketFactory sslFact = (SSLSocketFactory)SSLSocketFactory.getDefault();
+        SSLSocketFactory sslFact = (SSLSocketFactory) SSLSocketFactory.getDefault();
         s = sslFact.createSocket(s, ipAddress.toString(), port.getPort(), true);
       }
       return s;
@@ -120,8 +120,8 @@ public class DefaultTcpPortMonitor extends PortMonitor {
   }
 
   protected static final String
-    CONNECTED_SUCCESSFULLY = "Connected successfully",
-    CONNECTED_SUCCESSFULLY_SSL = CONNECTED_SUCCESSFULLY + " over SSL";
+      CONNECTED_SUCCESSFULLY = "Connected successfully",
+      CONNECTED_SUCCESSFULLY_SSL = CONNECTED_SUCCESSFULLY + " over SSL";
 
   /**
    * Performs any protocol-specific monitoring.  This default implementation does

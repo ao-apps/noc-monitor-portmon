@@ -55,7 +55,7 @@ public class DefaultUdpPortMonitor extends PortMonitor {
 
   @Override
   public String checkPort() throws Exception {
-    datagramSocket=new DatagramSocket();
+    datagramSocket = new DatagramSocket();
     try {
       datagramSocket.connect(InetAddress.getByName(ipAddress.toString()), port.getPort());
     } finally {

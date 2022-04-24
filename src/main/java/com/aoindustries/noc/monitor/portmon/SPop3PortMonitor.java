@@ -39,11 +39,11 @@ public class SPop3PortMonitor extends Pop3PortMonitor {
 
   public SPop3PortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
     super(
-      ipAddress,
-      port,
-      // Use SSL unless explicitely disabled with ssl=false
-      !"false".equalsIgnoreCase(monitoringParameters.getParameter("ssl")),
-      monitoringParameters
+        ipAddress,
+        port,
+        // Use SSL unless explicitely disabled with ssl=false
+        !"false".equalsIgnoreCase(monitoringParameters.getParameter("ssl")),
+        monitoringParameters
     );
   }
 

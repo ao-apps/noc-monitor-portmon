@@ -96,9 +96,9 @@ public abstract class JdbcPortMonitor extends PortMonitor {
 
     loadDriver(getDriver());
     conn = DriverManager.getConnection(
-      getJdbcUrl(ipAddress, port.getPort(), database),
-      username,
-      password
+        getJdbcUrl(ipAddress, port.getPort(), database),
+        username,
+        password
     );
     try {
       conn.setReadOnly(readOnly);
@@ -107,7 +107,7 @@ public abstract class JdbcPortMonitor extends PortMonitor {
       try (
         Statement stmt = conn.createStatement();
         ResultSet results = stmt.executeQuery(currentSQL = query)
-      ) {
+          ) {
         if (!results.next()) {
           throw new SQLException("No row returned");
         }
@@ -116,7 +116,7 @@ public abstract class JdbcPortMonitor extends PortMonitor {
         if (colCount == 0) {
           throw new SQLException("No columns returned");
         }
-        if (colCount>1) {
+        if (colCount > 1) {
           throw new SQLException("More than one column returned");
         }
         String result = results.getString(1);

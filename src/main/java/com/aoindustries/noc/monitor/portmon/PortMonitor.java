@@ -54,9 +54,9 @@ public abstract class PortMonitor {
         // TCP
         // TODO: HTTP(S) protocol support, with application-defined criteria
         if (
-          AppProtocol.AOSERV_DAEMON_SSL.equals(appProtocol)
-          || AppProtocol.AOSERV_MASTER_SSL.equals(appProtocol)
-          || AppProtocol.HTTPS.equals(appProtocol)
+            AppProtocol.AOSERV_DAEMON_SSL.equals(appProtocol)
+                || AppProtocol.AOSERV_MASTER_SSL.equals(appProtocol)
+                || AppProtocol.HTTPS.equals(appProtocol)
         ) {
           return new DefaultSslPortMonitor(ipAddress, port, monitoringParameters);
         }
@@ -79,10 +79,10 @@ public abstract class PortMonitor {
           return new SPop3PortMonitor(ipAddress, port, monitoringParameters);
         }
         if (
-          AppProtocol.POSTGRESQL.equals(appProtocol)
-          // PostgreSQL performs IDENT-based authentication on loopback,
-          // ncan't monitor with arbitrary usernames/passwords
-          && !ipAddress.isLoopback()
+            AppProtocol.POSTGRESQL.equals(appProtocol)
+                // PostgreSQL performs IDENT-based authentication on loopback,
+                // ncan't monitor with arbitrary usernames/passwords
+                && !ipAddress.isLoopback()
         ) {
           return new PostgreSQLPortMonitor(ipAddress, port, monitoringParameters);
         }
@@ -97,7 +97,7 @@ public abstract class PortMonitor {
         }
         return new DefaultTcpPortMonitor(ipAddress, port, monitoringParameters);
       default:
-        throw new IllegalArgumentException("Unable to find port monitor: ipAddress=\""+ipAddress+"\", port="+port+", appProtocol=\""+appProtocol+"\"");
+        throw new IllegalArgumentException("Unable to find port monitor: ipAddress=\"" + ipAddress + "\", port=" + port + ", appProtocol=\"" + appProtocol + "\"");
     }
   }
 
@@ -115,7 +115,7 @@ public abstract class PortMonitor {
         break;
       }
       if (ch != '\r') {
-        buffer.append((char)ch);
+        buffer.append((char) ch);
       }
     }
     String s = buffer.toString();

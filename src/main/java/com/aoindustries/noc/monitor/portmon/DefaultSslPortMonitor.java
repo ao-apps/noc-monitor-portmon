@@ -39,10 +39,10 @@ public class DefaultSslPortMonitor extends DefaultTcpPortMonitor {
 
   public DefaultSslPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
     super(
-      ipAddress,
-      port,
-      // Use SSL unless explicitely disabled with ssl=false
-      !"false".equalsIgnoreCase(monitoringParameters.getParameter("ssl"))
+        ipAddress,
+        port,
+        // Use SSL unless explicitely disabled with ssl=false
+        !"false".equalsIgnoreCase(monitoringParameters.getParameter("ssl"))
     );
   }
 

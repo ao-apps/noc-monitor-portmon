@@ -64,9 +64,9 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
    * Unique tags used in protocol.
    */
   private static final String
-    TAG_STARTTLS = "AA",
-    TAG_LOGIN    = "AB",
-    TAG_LOGOUT   = "AC";
+      TAG_STARTTLS = "AA",
+      TAG_LOGIN    = "AB",
+      TAG_LOGOUT   = "AC";
 
   private static void logout(Reader in, Writer out, StringBuilder buffer) throws IOException {
     out.write(TAG_LOGOUT + " LOGOUT" + CRLF);
@@ -76,7 +76,7 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
       throw new EOFException("End of file reading logout response line 1");
     }
     if (!line.startsWith("* BYE") && !line.startsWith(TAG_LOGOUT + " OK LOGOUT")) {
-      throw new IOException("Unexpected line reading logout response line 1: "+line);
+      throw new IOException("Unexpected line reading logout response line 1: " + line);
     }
     //if (line == null) {
     //  throw new EOFException("End of file reading logout response line 2");
@@ -100,10 +100,10 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
         throw new IllegalArgumentException("monitoringParameters does not include the password");
       }
       boolean starttls =
-        // Will not try STARTTLS when is SSL
-        !ssl
-        // Use SSL unless explicitely disabled with starttls=false
-        && !"false".equalsIgnoreCase(monitoringParameters.getParameter("starttls"));
+          // Will not try STARTTLS when is SSL
+          !ssl
+              // Use SSL unless explicitely disabled with starttls=false
+              && !"false".equalsIgnoreCase(monitoringParameters.getParameter("starttls"));
 
       final StringBuilder buffer = new StringBuilder();
       Charset charset = StandardCharsets.US_ASCII;
@@ -124,19 +124,19 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
           int bracketPos = line.indexOf(']');
           final String CAP1 = "* OK [";
           if (!line.startsWith(CAP1) || bracketPos == -1) {
-            throw new IOException("Unexpected capabilities line: "+line);
+            throw new IOException("Unexpected capabilities line: " + line);
           }
           if (starttls) {
             // See https://datatracker.ietf.org/doc/html/rfc2595
             final String capability = line.substring(
-              // Include first space of capabilities always
-              CAP1.length() - 1,
-              bracketPos
+                // Include first space of capabilities always
+                CAP1.length() - 1,
+                bracketPos
             );
             if (
-              !capability.startsWith("STARTTLS ")
-              && !capability.endsWith(" STARTTLS")
-              && !capability.contains(" STARTTLS ")
+                !capability.startsWith("STARTTLS ")
+                    && !capability.endsWith(" STARTTLS")
+                    && !capability.contains(" STARTTLS ")
             ) {
               // Logout
               logout(in, out, buffer);
@@ -153,7 +153,7 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
               throw new IOException("Unexpected line reading STARTTLS response: " + line);
             }
             // Wrap in SSL
-            SSLSocketFactory sslFact = (SSLSocketFactory)SSLSocketFactory.getDefault();
+            SSLSocketFactory sslFact = (SSLSocketFactory) SSLSocketFactory.getDefault();
             sslSocket = sslFact.createSocket(socket, ipAddress.toString(), port.getPort(), false);
             out = new BufferedWriter(new OutputStreamWriter(sslSocket.getOutputStream(), charset));
             in = new BufferedReader(new InputStreamReader(sslSocket.getInputStream(), charset));
@@ -171,9 +171,9 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
           }
           bracketPos = line.indexOf(']');
           if (!line.startsWith(TAG_LOGIN + " OK [") || bracketPos == -1) {
-            throw new IOException("Unexpected line reading login response: "+line);
+            throw new IOException("Unexpected line reading login response: " + line);
           }
-          String result = line.substring(bracketPos+1).trim();
+          String result = line.substring(bracketPos + 1).trim();
           // Logout
           logout(in, out, buffer);
           // Return OK result

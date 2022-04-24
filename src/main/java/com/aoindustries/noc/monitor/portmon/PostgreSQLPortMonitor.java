@@ -97,8 +97,8 @@ public class PostgreSQLPortMonitor extends JdbcPortMonitor {
   protected String getJdbcUrl(InetAddress ipAddress, int port, String database) {
     StringBuilder jdbcUrl = new StringBuilder();
     jdbcUrl
-      .append("jdbc:postgresql://")
-      .append(ipAddress.toBracketedString());
+        .append("jdbc:postgresql://")
+        .append(ipAddress.toBracketedString());
     if (port != Server.DEFAULT_PORT.getPort()) {
       jdbcUrl.append(':').append(port);
     }

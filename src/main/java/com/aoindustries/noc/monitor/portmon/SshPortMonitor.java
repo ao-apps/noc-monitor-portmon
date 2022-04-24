@@ -56,7 +56,7 @@ public class SshPortMonitor extends DefaultTcpPortMonitor {
         throw new EOFException("End of file reading status");
       }
       if (!line.startsWith("SSH-")) {
-        throw new IOException("Unexpected status line: "+line);
+        throw new IOException("Unexpected status line: " + line);
       }
       // Return OK result
       return line;

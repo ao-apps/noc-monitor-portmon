@@ -70,14 +70,14 @@ public class FtpPortMonitor extends DefaultTcpPortMonitor {
     try (
       BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socketOut, charset));
       BufferedReader in = new BufferedReader(new InputStreamReader(socketIn, charset))
-    ) {
+        ) {
       // Status line
       String line = in.readLine();
       if (line == null) {
         throw new EOFException("End of file reading status");
       }
       if (!line.startsWith("220 ")) {
-        throw new IOException("Unexpected status line: "+line);
+        throw new IOException("Unexpected status line: " + line);
       }
       // User
       out.write("user ");
@@ -89,7 +89,7 @@ public class FtpPortMonitor extends DefaultTcpPortMonitor {
         throw new EOFException("End of file reading user response");
       }
       if (!line.startsWith("331 ")) {
-        throw new IOException("Unexpected line reading user response: "+line);
+        throw new IOException("Unexpected line reading user response: " + line);
       }
       // Pass
       out.write("pass ");
@@ -101,7 +101,7 @@ public class FtpPortMonitor extends DefaultTcpPortMonitor {
         throw new EOFException("End of file reading pass response");
       }
       if (!line.startsWith("230 ")) {
-        throw new IOException("Unexpected line reading pass response: "+line);
+        throw new IOException("Unexpected line reading pass response: " + line);
       }
       String result = line.substring(4);
       // Quit
@@ -112,11 +112,11 @@ public class FtpPortMonitor extends DefaultTcpPortMonitor {
         throw new EOFException("End of file reading quit response");
       }
       if (!line.startsWith("221 ")) {
-        throw new IOException("Unexpected line reading quit response: "+line);
+        throw new IOException("Unexpected line reading quit response: " + line);
       }
       while ((line = in.readLine()) != null) {
         if (!line.startsWith("221 ")) {
-          throw new IOException("Unexpected line reading quit response: "+line);
+          throw new IOException("Unexpected line reading quit response: " + line);
         }
       }
       // Return OK result
