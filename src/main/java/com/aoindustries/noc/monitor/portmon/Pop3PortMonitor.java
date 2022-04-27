@@ -156,7 +156,7 @@ public class Pop3PortMonitor extends DefaultTcpPortMonitor {
           if (line.startsWith("+OK ")) {
             // Not locked
             result = line.substring(4);
-          } else if (line.equals("-ERR [IN-USE] Unable to lock maildrop: Mailbox is locked by POP server")) {
+          } else if ("-ERR [IN-USE] Unable to lock maildrop: Mailbox is locked by POP server".equals(line)) {
             // Locked, but otherwise OK
             result = line.substring(5);
           } else {
