@@ -54,6 +54,9 @@ public class DefaultTcpPortMonitor extends PortMonitor {
 
   private volatile Socket socket;
 
+  /**
+   * Creates a new default TCP monitor.
+   */
   public DefaultTcpPortMonitor(InetAddress ipAddress, Port port, boolean ssl) {
     super(ipAddress, port);
     if (port.getProtocol() != Protocol.TCP) {
@@ -62,6 +65,9 @@ public class DefaultTcpPortMonitor extends PortMonitor {
     this.ssl = ssl;
   }
 
+  /**
+   * Creates a new default TCP monitor.
+   */
   public DefaultTcpPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
     this(
         ipAddress,
@@ -119,9 +125,8 @@ public class DefaultTcpPortMonitor extends PortMonitor {
     }
   }
 
-  protected static final String
-      CONNECTED_SUCCESSFULLY = "Connected successfully",
-      CONNECTED_SUCCESSFULLY_SSL = CONNECTED_SUCCESSFULLY + " over SSL";
+  protected static final String CONNECTED_SUCCESSFULLY = "Connected successfully";
+  protected static final String CONNECTED_SUCCESSFULLY_SSL = CONNECTED_SUCCESSFULLY + " over SSL";
 
   /**
    * Performs any protocol-specific monitoring.  This default implementation does

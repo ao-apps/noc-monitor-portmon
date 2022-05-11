@@ -50,11 +50,17 @@ public class Pop3PortMonitor extends DefaultTcpPortMonitor {
 
   private final URIParameters monitoringParameters;
 
+  /**
+   * Creates a new POP3 monitor.
+   */
   public Pop3PortMonitor(InetAddress ipAddress, Port port, boolean ssl, URIParameters monitoringParameters) {
     super(ipAddress, port, ssl);
     this.monitoringParameters = monitoringParameters;
   }
 
+  /**
+   * Creates a new POP3 monitor.
+   */
   public Pop3PortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
     super(ipAddress, port, false);
     this.monitoringParameters = monitoringParameters;

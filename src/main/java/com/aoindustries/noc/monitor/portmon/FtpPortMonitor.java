@@ -40,8 +40,9 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * Monitors with FTP-specific protocol support.
- *
+ * <p>
  * TODO: Support "AUTH TLS" for FTP monitoring
+ * </p>
  *
  * @author  AO Industries, Inc.
  */
@@ -49,6 +50,9 @@ public class FtpPortMonitor extends DefaultTcpPortMonitor {
 
   private final URIParameters monitoringParameters;
 
+  /**
+   * Creates a new FTP monitor.
+   */
   public FtpPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
     super(ipAddress, port, false);
     this.monitoringParameters = monitoringParameters;
@@ -68,8 +72,8 @@ public class FtpPortMonitor extends DefaultTcpPortMonitor {
 
     Charset charset = StandardCharsets.US_ASCII;
     try (
-      BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socketOut, charset));
-      BufferedReader in = new BufferedReader(new InputStreamReader(socketIn, charset))
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socketOut, charset));
+        BufferedReader in = new BufferedReader(new InputStreamReader(socketIn, charset))
         ) {
       // Status line
       String line = in.readLine();
@@ -103,7 +107,7 @@ public class FtpPortMonitor extends DefaultTcpPortMonitor {
       if (!line.startsWith("230 ")) {
         throw new IOException("Unexpected line reading pass response: " + line);
       }
-      String result = line.substring(4);
+      final String result = line.substring(4);
       // Quit
       out.write("quit" + CRLF);
       out.flush();

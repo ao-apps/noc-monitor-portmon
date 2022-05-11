@@ -33,8 +33,9 @@ import java.io.Reader;
 /**
  * A <code>PortMonitor</code> connects to a service on a port and verifies it is
  * working correctly.  The monitor will only be used at most once per instance.
- *
+ * <p>
  * TODO: Support chronyd protocol: chronyc tracking
+ * </p>
  *
  * @author  AO Industries, Inc.
  */
@@ -67,16 +68,16 @@ public abstract class PortMonitor {
           return new ImapPortMonitor(ipAddress, port, monitoringParameters);
         }
         if (AppProtocol.SIMAP.equals(appProtocol)) {
-          return new SImapPortMonitor(ipAddress, port, monitoringParameters);
+          return new SimapPortMonitor(ipAddress, port, monitoringParameters);
         }
         if (AppProtocol.MYSQL.equals(appProtocol)) {
-          return new MySQLPortMonitor(ipAddress, port, monitoringParameters);
+          return new MysqlPortMonitor(ipAddress, port, monitoringParameters);
         }
         if (AppProtocol.POP3.equals(appProtocol)) {
           return new Pop3PortMonitor(ipAddress, port, monitoringParameters);
         }
         if (AppProtocol.SPOP3.equals(appProtocol)) {
-          return new SPop3PortMonitor(ipAddress, port, monitoringParameters);
+          return new Spop3PortMonitor(ipAddress, port, monitoringParameters);
         }
         if (
             AppProtocol.POSTGRESQL.equals(appProtocol)
@@ -84,7 +85,7 @@ public abstract class PortMonitor {
                 // ncan't monitor with arbitrary usernames/passwords
                 && !ipAddress.isLoopback()
         ) {
-          return new PostgreSQLPortMonitor(ipAddress, port, monitoringParameters);
+          return new PostgresqlPortMonitor(ipAddress, port, monitoringParameters);
         }
         if (AppProtocol.SMTP.equals(appProtocol) || AppProtocol.SUBMISSION.equals(appProtocol)) {
           return new SmtpPortMonitor(ipAddress, port, monitoringParameters);
@@ -129,6 +130,9 @@ public abstract class PortMonitor {
   protected final Port port;
   protected volatile boolean canceled;
 
+  /**
+   * Creates a new port monitor.
+   */
   protected PortMonitor(InetAddress ipAddress, Port port) {
     this.ipAddress = ipAddress;
     this.port = port;

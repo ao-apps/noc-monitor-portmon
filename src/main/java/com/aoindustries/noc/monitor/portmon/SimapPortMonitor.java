@@ -31,13 +31,16 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 /**
- * Monitors with POP3-specific protocol support over SSL.
+ * Monitors with IMAP-specific protocol support over SSL.
  *
  * @author  AO Industries, Inc.
  */
-public class SPop3PortMonitor extends Pop3PortMonitor {
+public class SimapPortMonitor extends ImapPortMonitor {
 
-  public SPop3PortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
+  /**
+   * Creates a new IMAP over SSL monitor.
+   */
+  public SimapPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
     super(
         ipAddress,
         port,

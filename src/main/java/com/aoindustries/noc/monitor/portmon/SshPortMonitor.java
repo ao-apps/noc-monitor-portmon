@@ -42,6 +42,9 @@ import java.nio.charset.StandardCharsets;
  */
 public class SshPortMonitor extends DefaultTcpPortMonitor {
 
+  /**
+   * Creates a new SSH monitor.
+   */
   public SshPortMonitor(InetAddress ipAddress, Port port) {
     super(ipAddress, port, false);
   }

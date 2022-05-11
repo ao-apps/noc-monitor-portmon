@@ -65,6 +65,9 @@ public abstract class JdbcPortMonitor extends PortMonitor {
 
   protected final boolean readOnly;
 
+  /**
+   * Creates a new JDBC monitor.
+   */
   protected JdbcPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
     super(ipAddress, port);
     this.monitoringParameters = monitoringParameters;
@@ -103,10 +106,10 @@ public abstract class JdbcPortMonitor extends PortMonitor {
     try {
       conn.setReadOnly(readOnly);
       @SuppressWarnings("UnusedAssignment")
-      String currentSQL = null;
+      String currentSql = null;
       try (
-        Statement stmt = conn.createStatement();
-        ResultSet results = stmt.executeQuery(currentSQL = query)
+          Statement stmt = conn.createStatement();
+          ResultSet results = stmt.executeQuery(currentSql = query)
           ) {
         if (!results.next()) {
           throw new SQLException("No row returned");
@@ -125,7 +128,7 @@ public abstract class JdbcPortMonitor extends PortMonitor {
         }
         return result;
       } catch (Error | RuntimeException | SQLException e) {
-        ErrorPrinter.addSQL(e, currentSQL);
+        ErrorPrinter.addSql(e, currentSql);
         throw e;
       }
     } finally {

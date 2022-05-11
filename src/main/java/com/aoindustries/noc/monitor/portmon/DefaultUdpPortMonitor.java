@@ -37,6 +37,9 @@ public class DefaultUdpPortMonitor extends PortMonitor {
 
   private volatile DatagramSocket datagramSocket;
 
+  /**
+   * Creates a new default UDP monitor.
+   */
   public DefaultUdpPortMonitor(com.aoapps.net.InetAddress ipAddress, Port port) {
     super(ipAddress, port);
     if (port.getProtocol() != Protocol.UDP) {

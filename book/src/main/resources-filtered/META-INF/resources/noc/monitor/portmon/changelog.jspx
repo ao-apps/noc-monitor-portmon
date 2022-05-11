@@ -37,7 +37,7 @@ along with noc-monitor-portmon.  If not, see <https://www.gnu.org/licenses/>.
     shortTitle="Changelog"
     tocLevels="1"
     datePublished="2020-04-11T01:35:38-05:00"
-    dateModified="2021-07-26T01:44:23-05:00"
+    dateModified="2022-05-04T04:08:06-05:00"
   >
     <c:if test="${fn:endsWith('@{project.version}', '-SNAPSHOT') and !fn:endsWith('@{project.version}', '-POST-SNAPSHOT')}">
       <changelog:release
@@ -47,7 +47,18 @@ along with noc-monitor-portmon.  If not, see <https://www.gnu.org/licenses/>.
         artifactId="@{documented.artifactId}"
         repository="@{nexusUrl}content/repositories/snapshots/"
         scmUrl="@{project.scm.url}"
-      />
+      >
+        <ul>
+          <li>Performed <ao:a href="https://checkstyle.org/">Checkstyle</ao:a> clean-up:
+            <ol>
+              <li>Renamed <code>MySQLPortMonitor</code> to <code>MysqlPortMonitor</code>.</li>
+              <li>Renamed <code>PostgreSQLPortMonitor</code> to <code>PostgresqlPortMonitor</code>.</li>
+              <li>Renamed <code>SImapPortMonitor</code> to <code>SimapPortMonitor</code>.</li>
+              <li>Renamed <code>SPop3PortMonitor</code> to <code>Spop3PortMonitor</code>.</li>
+            </ol>
+          </li>
+        </ul>
+      </changelog:release>
     </c:if>
 
     <changelog:release

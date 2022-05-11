@@ -37,6 +37,9 @@ import java.net.Socket;
  */
 public class SmtpsPortMonitor extends SmtpPortMonitor {
 
+  /**
+   * Creates a new SMTP over SSL monitor.
+   */
   public SmtpsPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
     super(
         ipAddress,

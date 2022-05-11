@@ -54,11 +54,17 @@ public class SmtpPortMonitor extends DefaultTcpPortMonitor {
 
   private final URIParameters monitoringParameters;
 
+  /**
+   * Creates a new SMTP monitor.
+   */
   public SmtpPortMonitor(InetAddress ipAddress, Port port, boolean ssl, URIParameters monitoringParameters) {
     super(ipAddress, port, ssl);
     this.monitoringParameters = monitoringParameters;
   }
 
+  /**
+   * Creates a new SMTP monitor.
+   */
   public SmtpPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
     super(ipAddress, port, false);
     this.monitoringParameters = monitoringParameters;

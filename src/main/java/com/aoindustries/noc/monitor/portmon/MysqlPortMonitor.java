@@ -36,11 +36,14 @@ import com.aoindustries.aoserv.client.mysql.User;
  *
  * @author  AO Industries, Inc.
  */
-public class MySQLPortMonitor extends JdbcPortMonitor {
+public class MysqlPortMonitor extends JdbcPortMonitor {
 
   private final boolean ssl;
 
-  public MySQLPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
+  /**
+   * Creates a new MySQL monitor.
+   */
+  public MysqlPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
     super(ipAddress, port, monitoringParameters);
     if (ipAddress.isLoopback()) {
       // Do not use SSL unless explicitely enabled with ssl=true
@@ -58,8 +61,8 @@ public class MySQLPortMonitor extends JdbcPortMonitor {
   }
 
   /**
-   * See <a href="https://dev.mysql.com/doc/connector-j/5.1/en/connector-j-reference-configuration-properties.html">https://dev.mysql.com/doc/connector-j/5.1/en/connector-j-reference-configuration-properties.html</a>,
-   *     <a href="https://dev.mysql.com/doc/connector-j/5.1/en/connector-j-reference-using-ssl.html">https://dev.mysql.com/doc/connector-j/5.1/en/connector-j-reference-using-ssl.html</a>
+   * See <a href="https://dev.mysql.com/doc/connector-j/5.1/en/connector-j-reference-configuration-properties.html">https://dev.mysql.com/doc/connector-j/5.1/en/connector-j-reference-configuration-properties.html</a>
+   * and <a href="https://dev.mysql.com/doc/connector-j/5.1/en/connector-j-reference-using-ssl.html">https://dev.mysql.com/doc/connector-j/5.1/en/connector-j-reference-using-ssl.html</a>.
    */
   @Override
   protected String getJdbcUrl(InetAddress ipAddress, int port, String database) {

@@ -36,7 +36,7 @@ import com.aoindustries.aoserv.client.postgresql.User;
  *
  * @author  AO Industries, Inc.
  */
-public class PostgreSQLPortMonitor extends JdbcPortMonitor {
+public class PostgresqlPortMonitor extends JdbcPortMonitor {
 
   private static final String APPLICATION_NAME = "noc-monitor";
 
@@ -58,7 +58,10 @@ public class PostgreSQLPortMonitor extends JdbcPortMonitor {
   private final String sslmode;
   private final String sslfactory;
 
-  public PostgreSQLPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
+  /**
+   * Creates a new PostgreSQL monitor.
+   */
+  public PostgresqlPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
     super(ipAddress, port, monitoringParameters);
     if (ipAddress.isLoopback()) {
       // Do not use SSL unless explicitely enabled with ssl=true
@@ -68,17 +71,17 @@ public class PostgreSQLPortMonitor extends JdbcPortMonitor {
       ssl = !"false".equalsIgnoreCase(monitoringParameters.getParameter("ssl"));
     }
     if (ssl) {
-      String _sslmode = monitoringParameters.getParameter("sslmode");
-      if (_sslmode == null) {
-        _sslmode = DEFAULT_SSLMODE;
+      String sslmodeTmp = monitoringParameters.getParameter("sslmode");
+      if (sslmodeTmp == null) {
+        sslmodeTmp = DEFAULT_SSLMODE;
       }
-      this.sslmode = _sslmode;
+      this.sslmode = sslmodeTmp;
 
-      String _sslfactory = monitoringParameters.getParameter("sslfactory");
-      if (_sslfactory == null) {
-        _sslfactory = DEFAULT_SSL_FACTORY;
+      String sslfactoryTmp = monitoringParameters.getParameter("sslfactory");
+      if (sslfactoryTmp == null) {
+        sslfactoryTmp = DEFAULT_SSL_FACTORY;
       }
-      this.sslfactory = _sslfactory;
+      this.sslfactory = sslfactoryTmp;
     } else {
       sslmode = null;
       this.sslfactory = null;
@@ -91,7 +94,7 @@ public class PostgreSQLPortMonitor extends JdbcPortMonitor {
   }
 
   /**
-   * See <a href="https://jdbc.postgresql.org/documentation/head/connect.html">Connecting to the Database</a>
+   * See <a href="https://jdbc.postgresql.org/documentation/head/connect.html">Connecting to the Database</a>.
    */
   @Override
   protected String getJdbcUrl(InetAddress ipAddress, int port, String database) {

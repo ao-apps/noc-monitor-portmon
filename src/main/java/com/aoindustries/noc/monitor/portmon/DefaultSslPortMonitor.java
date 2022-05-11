@@ -37,6 +37,9 @@ import java.net.Socket;
  */
 public class DefaultSslPortMonitor extends DefaultTcpPortMonitor {
 
+  /**
+   * Creates a new default SSL monitor.
+   */
   public DefaultSslPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
     super(
         ipAddress,

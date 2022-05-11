@@ -50,11 +50,17 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
 
   private final URIParameters monitoringParameters;
 
+  /**
+   * Creates a new IMAP monitor.
+   */
   public ImapPortMonitor(InetAddress ipAddress, Port port, boolean ssl, URIParameters monitoringParameters) {
     super(ipAddress, port, ssl);
     this.monitoringParameters = monitoringParameters;
   }
 
+  /**
+   * Creates a new IMAP monitor.
+   */
   public ImapPortMonitor(InetAddress ipAddress, Port port, URIParameters monitoringParameters) {
     super(ipAddress, port, false);
     this.monitoringParameters = monitoringParameters;
@@ -63,10 +69,17 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
   /**
    * Unique tags used in protocol.
    */
-  private static final String
-      TAG_STARTTLS = "AA",
-      TAG_LOGIN    = "AB",
-      TAG_LOGOUT   = "AC";
+  private static final String TAG_STARTTLS = "AA";
+
+  /**
+   * Unique tags used in protocol.
+   */
+  private static final String TAG_LOGIN = "AB";
+
+  /**
+   * Unique tags used in protocol.
+   */
+  private static final String TAG_LOGOUT = "AC";
 
   private static void logout(Reader in, Writer out, StringBuilder buffer) throws IOException {
     out.write(TAG_LOGOUT + " LOGOUT" + CRLF);
@@ -122,15 +135,15 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
             throw new EOFException("End of file reading capabilities");
           }
           int bracketPos = line.indexOf(']');
-          final String CAP1 = "* OK [";
-          if (!line.startsWith(CAP1) || bracketPos == -1) {
+          final String cap1 = "* OK [";
+          if (!line.startsWith(cap1) || bracketPos == -1) {
             throw new IOException("Unexpected capabilities line: " + line);
           }
           if (starttls) {
             // See https://datatracker.ietf.org/doc/html/rfc2595
             final String capability = line.substring(
                 // Include first space of capabilities always
-                CAP1.length() - 1,
+                cap1.length() - 1,
                 bracketPos
             );
             if (
