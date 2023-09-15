@@ -133,16 +133,6 @@ along with noc-monitor-portmon.  If not, see <https://www.gnu.org/licenses/>.
           </excludeVulnerabilityIds>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId><artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <usedDependencies>
-            <!-- Runtime Direct -->
-            <dependency>com.mysql:mysql-connector-j</dependency>
-            <dependency>org.postgresql:postgresql</dependency>
-          </usedDependencies>
-        </configuration>
-      </plugin>
       <!-- Java 1.8: see https://maven.apache.org/plugins/maven-compiler-plugin/examples/module-info.html -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId>
