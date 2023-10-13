@@ -1,6 +1,6 @@
 /*
  * noc-monitor-portmon - Port monitoring implementations.
- * Copyright (C) 2009-2013, 2016, 2017, 2018, 2019, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2009-2013, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -112,19 +112,19 @@ public abstract class JdbcPortMonitor extends PortMonitor {
           ResultSet results = stmt.executeQuery(currentSql = query)
           ) {
         if (!results.next()) {
-          throw new SQLException("No row returned");
+          throw new SQLException("No row returned"); // TODO: NoRowException move to ao-sql
         }
         ResultSetMetaData metaData = results.getMetaData();
         int colCount = metaData.getColumnCount();
         if (colCount == 0) {
-          throw new SQLException("No columns returned");
+          throw new SQLException("No columns returned"); // TODO: Create a NoColumnException in ao-sql
         }
         if (colCount > 1) {
-          throw new SQLException("More than one column returned");
+          throw new SQLException("More than one column returned"); // TODO: Create an ExtraRowException in ao-sql
         }
         String result = results.getString(1);
         if (results.next()) {
-          throw new SQLException("More than one row returned");
+          throw new SQLException("More than one row returned"); // TODO: ExtraRowException move to ao-sql
         }
         return result;
       } catch (Error | RuntimeException | SQLException e) {
