@@ -1,6 +1,6 @@
 /*
  * noc-monitor-portmon - Port monitoring implementations.
- * Copyright (C) 2001-2013, 2016, 2017, 2018, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2001-2013, 2016, 2017, 2018, 2020, 2021, 2022, 2024  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -115,6 +115,9 @@ public class DefaultTcpPortMonitor extends PortMonitor {
     }
   }
 
+  protected static final String CONNECTED_SUCCESSFULLY = "Connected successfully";
+  protected static final String CONNECTED_SUCCESSFULLY_SSL = CONNECTED_SUCCESSFULLY + " over SSL";
+
   @Override
   public final String checkPort() throws Exception {
     socket = connect();
@@ -124,9 +127,6 @@ public class DefaultTcpPortMonitor extends PortMonitor {
       socket.close();
     }
   }
-
-  protected static final String CONNECTED_SUCCESSFULLY = "Connected successfully";
-  protected static final String CONNECTED_SUCCESSFULLY_SSL = CONNECTED_SUCCESSFULLY + " over SSL";
 
   /**
    * Performs any protocol-specific monitoring.  This default implementation does
