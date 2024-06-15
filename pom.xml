@@ -45,6 +45,7 @@ along with noc-monitor-portmon.  If not, see <https://www.gnu.org/licenses/>.
 / <a target="${javadoc.target}" href="https://aoindustries.com/noc/monitor/">Monitor</a>
 / <a target="${javadoc.target}" href="${project.url}">PortMon</a>]]></javadoc.breadcrumbs>
     <!-- com.aoindustries is on original Sonatype Nexus Repository Manager -->
+    <nexusServerId>ossrh-aoindustries</nexusServerId>
     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
     <!-- SonarQube -->
     <sonar.projectKey>com.aoapps.platform:noc-monitor-portmon<!-- TODO: ${project.groupId}:${project.artifactId} --></sonar.projectKey>
