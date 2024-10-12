@@ -1,6 +1,6 @@
 /*
  * noc-monitor-portmon - Port monitoring implementations.
- * Copyright (C) 2001-2013, 2016, 2017, 2018, 2019, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2001-2013, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2024  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -102,6 +102,9 @@ public abstract class PortMonitor {
     }
   }
 
+  /**
+   * Reads a line into the given buffer.
+   */
   protected static String readLine(Reader in, StringBuilder buffer) throws IOException {
     buffer.setLength(0);
     while (true) {
