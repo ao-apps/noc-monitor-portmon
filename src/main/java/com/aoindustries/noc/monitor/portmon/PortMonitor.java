@@ -33,9 +33,8 @@ import java.io.Reader;
 /**
  * A <code>PortMonitor</code> connects to a service on a port and verifies it is
  * working correctly.  The monitor will only be used at most once per instance.
- * <p>
- * TODO: Support chronyd protocol: chronyc tracking
- * </p>
+ *
+ * <p>TODO: Support chronyd protocol: chronyc tracking</p>
  *
  * @author  AO Industries, Inc.
  */
@@ -142,15 +141,12 @@ public abstract class PortMonitor {
   }
 
   /**
-   * <p>
    * Cancels this port method on a best effort basis.  This will not necessarily cause the checkPort
    * method to return immediately.  This should only be used once the result
    * of checkPort is no longer relevant, such as after a timeout.  Some monitors
    * may still perform their task arbitrarily long after cancel has been called.
-   * </p>
-   * <p>
-   * It is critical that subclass implementations of this method not block in any way.
-   * </p>
+   *
+   * <p>It is critical that subclass implementations of this method not block in any way.</p>
    *
    * @see  #checkPort()
    */
