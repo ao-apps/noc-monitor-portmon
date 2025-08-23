@@ -99,7 +99,7 @@ public class DefaultTcpPortMonitor extends PortMonitor {
     try {
       s.setKeepAlive(true);
       s.setSoLinger(true, AOPool.DEFAULT_SOCKET_SO_LINGER);
-      //s.setTcpNoDelay(true);
+      // s.setTcpNoDelay(true);
       s.setSoTimeout(TIMEOUT);
       s.connect(new InetSocketAddress(ipAddress.toString(), port.getPort()), TIMEOUT);
       successful = true;

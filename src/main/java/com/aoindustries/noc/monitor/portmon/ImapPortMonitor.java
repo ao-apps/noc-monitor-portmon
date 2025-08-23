@@ -91,12 +91,12 @@ public class ImapPortMonitor extends DefaultTcpPortMonitor {
     if (!line.startsWith("* BYE") && !line.startsWith(TAG_LOGOUT + " OK LOGOUT")) {
       throw new IOException("Unexpected line reading logout response line 1: " + line);
     }
-    //if (line == null) {
-    //  throw new EOFException("End of file reading logout response line 2");
-    //}
-    //if (!line.startsWith("* BYE") && !line.startsWith(TAG_LOGOUT + " OK LOGOUT")) {
-    //  throw new IOException("Unexpected line reading logout response line 2: "+line);
-    //}
+    // if (line == null) {
+    //   throw new EOFException("End of file reading logout response line 2");
+    // }
+    // if (!line.startsWith("* BYE") && !line.startsWith(TAG_LOGOUT + " OK LOGOUT")) {
+    //   throw new IOException("Unexpected line reading logout response line 2: "+line);
+    // }
   }
 
   @Override

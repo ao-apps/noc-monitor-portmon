@@ -184,7 +184,7 @@ public class SmtpPortMonitor extends DefaultTcpPortMonitor {
             out.write("AUTH PLAIN ");
             // See http://www.fehcom.de/qmail/smtpauth.html
             String authMessage = "\0" + username + "\0" + password;
-            //out.println(Base64Coder.encode(authMessage.getBytes(charset)));
+            // out.println(Base64Coder.encode(authMessage.getBytes(charset)));
             out.write(Base64.getEncoder().encodeToString(authMessage.getBytes(charset)));
             out.write(CRLF);
             out.flush();
