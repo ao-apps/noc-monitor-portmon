@@ -148,7 +148,7 @@ public abstract class PortMonitor {
    *
    * <p>It is critical that subclass implementations of this method not block in any way.</p>
    *
-   * @see  #checkPort()
+   * @see  PortMonitor#checkPort()
    */
   public void cancel() {
     canceled = true;
@@ -159,7 +159,7 @@ public abstract class PortMonitor {
    * should be provided externally and call the <code>cancel</code> method.
    * If any error occurs, must throw an exception.
    *
-   * @see  #cancel()
+   * @see  PortMonitor#cancel()
    *
    * @return  the message indicating success
    */
