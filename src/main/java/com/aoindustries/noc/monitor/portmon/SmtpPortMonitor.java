@@ -1,6 +1,6 @@
 /*
  * noc-monitor-portmon - Port monitoring implementations.
- * Copyright (C) 2001-2013, 2016, 2017, 2018, 2019, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2001-2013, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2026  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -87,22 +87,22 @@ public class SmtpPortMonitor extends DefaultTcpPortMonitor {
     Socket sslSocket = null;
     try {
       // Get the configuration
-      String from = Strings.nullIfEmpty(monitoringParameters.getParameter("from"));
+      final String from = Strings.nullIfEmpty(monitoringParameters.getParameter("from"));
       if (from == null) {
         throw new IllegalArgumentException("monitoringParameters does not include the from parameter");
       }
-      String recipient = Strings.nullIfEmpty(monitoringParameters.getParameter("recipient"));
+      final String recipient = Strings.nullIfEmpty(monitoringParameters.getParameter("recipient"));
       if (recipient == null) {
         throw new IllegalArgumentException("monitoringParameters does not include the recipient parameter");
       }
-      boolean starttls =
+      final boolean starttls =
           // Will not try STARTTLS when is SSL
           !ssl
               // Use SSL unless explicitely disabled with starttls=false
               && !"false".equalsIgnoreCase(monitoringParameters.getParameter("starttls"));
       // Optional for authenticated SMTP
-      String username = Strings.nullIfEmpty(monitoringParameters.getParameter("username"));
-      String password = Strings.nullIfEmpty(monitoringParameters.getParameter("password"));
+      final String username = Strings.nullIfEmpty(monitoringParameters.getParameter("username"));
+      final String password = Strings.nullIfEmpty(monitoringParameters.getParameter("password"));
       if ((username == null) != (password == null)) {
         throw new IllegalArgumentException("monitoringParameters must include either both username and password or neither");
       }
