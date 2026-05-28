@@ -231,9 +231,6 @@ along with noc-monitor-portmon.  If not, see <https://www.gnu.org/licenses/>.
       </dependency>
       <!-- Runtime Transitive -->
       <dependency>
-        <groupId>org.checkerframework</groupId><artifactId>checker-qual</artifactId><version>4.1.0</version>
-      </dependency>
-      <dependency>
         <groupId>com.google.protobuf</groupId><artifactId>protobuf-java</artifactId><version>4.35.0</version>
       </dependency>
     </dependencies>
