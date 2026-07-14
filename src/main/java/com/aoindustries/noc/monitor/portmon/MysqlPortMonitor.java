@@ -1,6 +1,6 @@
 /*
  * noc-monitor-portmon - Port monitoring implementations.
- * Copyright (C) 2009-2013, 2016, 2017, 2018, 2019, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2009-2013, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2026  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -84,6 +84,9 @@ public class MysqlPortMonitor extends JdbcPortMonitor {
     URIEncoder.encodeURIComponent(Boolean.toString(ssl), jdbcUrl);
     if (ssl) {
       jdbcUrl.append("&requireSSL=true");
+    }
+    if (!ssl && ipAddress.isLoopback()) {
+      jdbcUrl.append("&allowPublicKeyRetrieval=true");
     }
     jdbcUrl.append("&netTimeoutForStreamingResults=");
     URIEncoder.encodeURIComponent(Integer.toString(TIMEOUT), jdbcUrl);
