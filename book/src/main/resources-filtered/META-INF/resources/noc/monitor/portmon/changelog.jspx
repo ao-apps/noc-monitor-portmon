@@ -37,7 +37,7 @@ along with noc-monitor-portmon.  If not, see <https://www.gnu.org/licenses/>.
     shortTitle="Changelog"
     tocLevels="1"
     datePublished="2020-04-11T01:35:38-05:00"
-    dateModified="2025-07-02T23:05:45Z"
+    dateModified="2026-10-24T05:44:08Z"
   >
     <c:set var="latestRelease" value="1.4.2" />
     <c:if test="${
@@ -55,6 +55,7 @@ along with noc-monitor-portmon.  If not, see <https://www.gnu.org/licenses/>.
         <ul>
           <li>Updated dependencies.</li>
           <li>Minimum Java version changed from 1.8 to 11.</li>
+          <li>Complete SSL handshake when using default no-op <code>checkPort</code> with SSL enabled.</li>
         </ul>
       </changelog:release>
     </c:if>

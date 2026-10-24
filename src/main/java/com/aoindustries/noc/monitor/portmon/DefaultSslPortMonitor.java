@@ -1,6 +1,6 @@
 /*
  * noc-monitor-portmon - Port monitoring implementations.
- * Copyright (C) 2018, 2019, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2018, 2019, 2020, 2021, 2022, 2026  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -29,6 +29,7 @@ import com.aoapps.net.URIParameters;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import javax.net.ssl.SSLSocket;
 
 /**
  * Monitors any SSL port by simply connecting and disconnecting.
@@ -54,7 +55,7 @@ public class DefaultSslPortMonitor extends DefaultTcpPortMonitor {
   @Override
   public String checkPort(Socket socket, InputStream socketIn, OutputStream socketOut) throws Exception {
     if (ssl) {
-      return CONNECTED_SUCCESSFULLY_SSL;
+      return super.checkPort(socket, socketIn, socketOut);
     } else {
       return CONNECTED_SUCCESSFULLY_SSL_DISABLED;
     }

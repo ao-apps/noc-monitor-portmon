@@ -35,6 +35,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 /**
@@ -134,6 +135,7 @@ public class DefaultTcpPortMonitor extends PortMonitor {
    */
   protected String checkPort(Socket socket, InputStream in, OutputStream out) throws Exception {
     if (ssl) {
+      ((SSLSocket) socket).startHandshake();
       return CONNECTED_SUCCESSFULLY_SSL;
     } else {
       return CONNECTED_SUCCESSFULLY;
