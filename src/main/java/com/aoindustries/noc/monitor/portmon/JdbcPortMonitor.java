@@ -1,6 +1,6 @@
 /*
  * noc-monitor-portmon - Port monitoring implementations.
- * Copyright (C) 2009-2013, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024  AO Industries, Inc.
+ * Copyright (C) 2009-2013, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2026  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -144,7 +144,7 @@ public abstract class JdbcPortMonitor extends PortMonitor {
       try {
         myConn.close();
       } catch (SQLException err) {
-        logger.log(Level.WARNING, null, err);
+        logger.log(Level.WARNING, "TODO: message here", err);
       }
     }
   }
