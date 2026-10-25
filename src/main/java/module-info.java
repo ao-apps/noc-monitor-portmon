@@ -1,6 +1,6 @@
 /*
  * noc-monitor-portmon - Port monitoring implementations.
- * Copyright (C) 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2021, 2022, 2026  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -21,7 +21,6 @@
  * along with noc-monitor-portmon.  If not, see <https://www.gnu.org/licenses/>.
  */
 module com.aoindustries.noc.monitor.portmon {
-  exports com.aoindustries.noc.monitor.portmon;
   // Direct
   requires com.aoapps.hodgepodge; // <groupId>com.aoapps</groupId><artifactId>ao-hodgepodge</artifactId>
   requires com.aoapps.lang; // <groupId>com.aoapps</groupId><artifactId>ao-lang</artifactId>
@@ -30,4 +29,6 @@ module com.aoindustries.noc.monitor.portmon {
   // Java SE
   requires java.logging;
   requires java.sql;
+
+  exports com.aoindustries.noc.monitor.portmon;
 }
